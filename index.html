@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPACE RACE - Command Center</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Courier New',monospace;background:#0a0e1a;color:#c8ccd4;min-height:100vh;overflow-x:hidden}
+body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;
+background:repeating-linear-gradient(0deg,rgba(0,0,0,0.06) 0px,rgba(0,0,0,0.06) 1px,transparent 1px,transparent 3px)}
+
+.container{max-width:1200px;margin:0 auto;padding:20px}
+
+/* Header */
+.header{text-align:center;padding:20px 0;border-bottom:2px solid #1a2040;margin-bottom:20px;position:relative}
+.header h1{font-size:2.2em;letter-spacing:8px;color:#ffd54f;text-shadow:0 0 20px rgba(255,213,79,0.3)}
+.header .subtitle{color:#546e7a;font-size:0.8em;margin-top:4px;letter-spacing:3px}
+.classified-stamp{position:absolute;top:10px;right:20px;color:rgba(229,57,53,0.15);font-size:2.5em;font-weight:900;
+transform:rotate(12deg);letter-spacing:4px;border:4px solid rgba(229,57,53,0.15);padding:2px 12px}
+
+/* Score Bar */
+.score-bar{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;
+background:linear-gradient(90deg,rgba(33,150,243,0.08),rgba(255,255,255,0.02),rgba(229,57,53,0.08));
+border:1px solid rgba(255,255,255,0.06);border-radius:10px;margin-bottom:20px}
+.score-player{text-align:center;min-width:200px}
+.score-name{font-size:1.1em;font-weight:700;letter-spacing:3px;margin-bottom:6px}
+.score-rep{font-size:2em;font-weight:900}
+.score-sub{font-size:0.75em;color:#78849c;margin-top:4px}
+.score-vs{font-size:1.5em;color:#2a3050;font-weight:900;letter-spacing:4px}
+.p1-color{color:#42a5f5}
+.p2-color{color:#ef5350}
+
+/* Tabs */
+.tabs{display:flex;gap:2px;margin-bottom:20px}
+.tab{padding:10px 20px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);
+cursor:pointer;font-family:inherit;color:#78849c;font-size:0.85em;letter-spacing:2px;transition:all 0.2s}
+.tab:first-child{border-radius:8px 0 0 8px}
+.tab:last-child{border-radius:0 8px 8px 0}
+.tab.active{background:rgba(255,213,79,0.1);color:#ffd54f;border-color:rgba(255,213,79,0.2)}
+.tab:hover{background:rgba(255,255,255,0.05)}
+
+/* Panels */
+.panel{display:none}
+.panel.active{display:block}
+
+/* Timeline */
+.timeline{position:relative;padding:20px 0}
+.tl-row{display:flex;align-items:center;margin-bottom:4px;min-height:36px}
+.tl-left{flex:1;text-align:right;padding-right:16px;font-size:0.82em}
+.tl-center{width:40px;display:flex;justify-content:center;position:relative}
+.tl-right{flex:1;text-align:left;padding-left:16px;font-size:0.82em}
+.tl-line{position:absolute;top:0;bottom:0;left:50%;width:2px;background:rgba(255,255,255,0.06);transform:translateX(-50%)}
+.tl-dot{width:14px;height:14px;border-radius:50%;z-index:1;border:2px solid #2a3050;background:#0a0e1a}
+.tl-dot.p1{background:#42a5f5;border-color:#1e88e5;box-shadow:0 0 8px rgba(66,165,245,0.4)}
+.tl-dot.p2{background:#ef5350;border-color:#e53935;box-shadow:0 0 8px rgba(239,83,80,0.4)}
+.tl-dot.both{background:#ffd54f;border-color:#ffc107;box-shadow:0 0 8px rgba(255,213,79,0.4)}
+.tl-dot.none{background:#1a2040;border-color:#2a3050}
+.tl-dot.hist{background:none;border:2px dashed #37474f;width:10px;height:10px}
+.tl-date{color:#546e7a;font-size:0.75em}
+.tl-milestone{font-weight:700}
+.tl-first{color:#ffd54f}
+.tl-milestone-name{color:#aab0c0;font-size:0.85em;white-space:nowrap}
+.tl-tier{font-size:0.7em;letter-spacing:2px;color:#37474f;text-align:center;padding:10px 0 6px;text-transform:uppercase}
+
+/* Stats Grid */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.stat-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:16px 20px}
+.stat-card h3{font-size:0.75em;text-transform:uppercase;letter-spacing:2px;color:#546e7a;margin-bottom:12px}
+.stat-row{display:flex;justify-content:space-between;padding:4px 0;font-size:0.85em}
+.stat-row .label{color:#78849c}
+.stat-row .val{font-weight:700}
+
+/* News Feed */
+.news-feed{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;
+padding:16px 20px;max-height:300px;overflow-y:auto}
+.news-feed h3{font-size:0.75em;text-transform:uppercase;letter-spacing:2px;color:#546e7a;margin-bottom:12px}
+.news-item{padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.03);font-size:0.82em;line-height:1.5}
+.news-item:last-child{border:none}
+.news-item .date{color:#37474f;font-size:0.8em}
+.news-item .headline{color:#e0e4ec}
+.news-item .first-tag{color:#ffd54f;font-weight:700;font-size:0.75em;letter-spacing:1px}
+
+/* Import */
+.import-panel{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;
+padding:20px;margin-bottom:20px}
+.import-panel h3{font-size:0.75em;text-transform:uppercase;letter-spacing:2px;color:#546e7a;margin-bottom:12px}
+.import-row{display:flex;gap:12px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.import-row label{color:#78849c;font-size:0.85em;min-width:60px}
+.import-row input[type="text"]{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
+color:#e0e4ec;padding:8px 12px;border-radius:6px;font-family:inherit;font-size:0.85em;width:200px}
+.import-row input[type="file"]{color:#78849c;font-size:0.8em}
+.btn{padding:8px 20px;border:1px solid rgba(255,213,79,0.3);background:rgba(255,213,79,0.08);color:#ffd54f;
+border-radius:6px;cursor:pointer;font-family:inherit;font-size:0.85em;letter-spacing:1px;transition:all 0.2s}
+.btn:hover{background:rgba(255,213,79,0.15)}
+.btn-danger{border-color:rgba(229,57,53,0.3);background:rgba(229,57,53,0.08);color:#ef5350}
+.btn-danger:hover{background:rgba(229,57,53,0.15)}
+.import-status{font-size:0.8em;color:#546e7a;margin-top:8px}
+
+/* Rules */
+.rules{line-height:1.8;font-size:0.88em;color:#90a4ae}
+.rules h3{color:#ffd54f;font-size:1em;margin:16px 0 8px;letter-spacing:2px}
+.rules ul{margin-left:20px}
+
+/* Progress bar */
+.progress-bar{display:flex;height:20px;border-radius:10px;overflow:hidden;background:rgba(255,255,255,0.04);margin:8px 0}
+.progress-seg{display:flex;align-items:center;justify-content:center;font-size:0.65em;font-weight:700;color:#fff;transition:width 0.5s}
+
+/* Empty state */
+.empty-state{text-align:center;padding:60px 20px;color:#37474f}
+.empty-state .big{font-size:3em;margin-bottom:10px}
+.empty-state p{font-size:0.9em}
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>SPACE RACE</h1>
+        <div class="subtitle">COMMAND CENTER // CAREER COMPARISON DASHBOARD</div>
+        <div class="classified-stamp">TOP SECRET</div>
+    </div>
+
+    <div class="score-bar" id="scoreBar">
+        <div class="score-player">
+            <div class="score-name p1-color" id="p1Name">PLAYER 1</div>
+            <div class="score-rep p1-color" id="p1Rep">--</div>
+            <div class="score-sub" id="p1Sub">Import save to begin</div>
+        </div>
+        <div class="score-vs">VS</div>
+        <div class="score-player">
+            <div class="score-name p2-color" id="p2Name">PLAYER 2</div>
+            <div class="score-rep p2-color" id="p2Rep">--</div>
+            <div class="score-sub" id="p2Sub">Import save to begin</div>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab('dashboard')">DASHBOARD</div>
+        <div class="tab" onclick="switchTab('timeline')">MILESTONE RACE</div>
+        <div class="tab" onclick="switchTab('news')">PROPAGANDA</div>
+        <div class="tab" onclick="switchTab('import')">IMPORT</div>
+        <div class="tab" onclick="switchTab('rules')">RULES</div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="panel active" id="panel-dashboard">
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <h3>Race Progress</h3>
+                <div id="raceProgress">
+                    <div class="empty-state"><p>Import both saves to see the race</p></div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <h3>Key Stats</h3>
+                <div id="keyStats">
+                    <div class="empty-state"><p>No data yet</p></div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <h3>Milestones Won</h3>
+                <div id="milestonesWon">
+                    <div class="empty-state"><p>No data yet</p></div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <h3>Head to Head</h3>
+                <div id="headToHead">
+                    <div class="empty-state"><p>No data yet</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TIMELINE -->
+    <div class="panel" id="panel-timeline">
+        <div id="timelineContent">
+            <div class="empty-state"><div class="big">&#128640;</div><p>Import at least one save to see the milestone race</p></div>
+        </div>
+    </div>
+
+    <!-- NEWS -->
+    <div class="panel" id="panel-news">
+        <div class="news-feed" id="newsFeed">
+            <h3>Propaganda Feed</h3>
+            <div id="newsContent">
+                <div class="empty-state"><p>No news yet. Import saves to generate headlines.</p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- IMPORT -->
+    <div class="panel" id="panel-import">
+        <div class="import-panel">
+            <h3>Player 1 Setup</h3>
+            <div class="import-row">
+                <label>Name:</label>
+                <input type="text" id="p1NameInput" placeholder="Player 1 name" value="">
+            </div>
+            <div class="import-row">
+                <label>Save:</label>
+                <input type="file" id="p1File" accept=".sfs">
+                <button class="btn" onclick="importSave(1)">IMPORT</button>
+            </div>
+            <div class="import-status" id="p1Status"></div>
+        </div>
+        <div class="import-panel">
+            <h3>Player 2 Setup</h3>
+            <div class="import-row">
+                <label>Name:</label>
+                <input type="text" id="p2NameInput" placeholder="Player 2 name" value="">
+            </div>
+            <div class="import-row">
+                <label>Save:</label>
+                <input type="file" id="p2File" accept=".sfs">
+                <button class="btn" onclick="importSave(2)">IMPORT</button>
+            </div>
+            <div class="import-status" id="p2Status"></div>
+        </div>
+        <div class="import-panel">
+            <h3>Sync Between Players</h3>
+            <p style="font-size:0.8em;color:#546e7a;margin-bottom:10px">Export your state and send it to your opponent so they can see both saves on their browser.</p>
+            <div class="import-row">
+                <button class="btn" onclick="exportState()">EXPORT STATE</button>
+                <button class="btn" onclick="document.getElementById('stateFileInput').click()">IMPORT STATE</button>
+                <input type="file" id="stateFileInput" accept=".json" style="display:none" onchange="importState(event)">
+            </div>
+            <div class="import-status" id="syncStatus"></div>
+        </div>
+        <div class="import-panel">
+            <h3>Manage Data</h3>
+            <div class="import-row">
+                <button class="btn btn-danger" onclick="if(confirm('Clear all data?')){localStorage.removeItem('spaceRace');location.reload()}">RESET ALL DATA</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- RULES -->
+    <div class="panel" id="panel-rules">
+        <div class="rules">
+            <h3>How It Works</h3>
+            <ul>
+                <li>Both players run separate RP-1 careers with the same mod list</li>
+                <li>Import your <code>persistent.sfs</code> or quicksave to update the dashboard</li>
+                <li>The app reads your <b>reputation</b>, <b>funds</b>, <b>milestones</b>, and <b>in-game date</b></li>
+                <li>Both players can use any parts/engines - no faction restrictions</li>
+            </ul>
+            <h3>Scoring</h3>
+            <ul>
+                <li>Your score is your <b>RP-1 reputation</b> - the higher the better</li>
+                <li>Milestones are compared by <b>in-game date</b> - whoever achieves them first gets bragging rights</li>
+                <li>The milestone timeline shows who got there first with a gold star</li>
+            </ul>
+            <h3>Propaganda</h3>
+            <ul>
+                <li>Every milestone completed first generates a newspaper headline</li>
+                <li>Headlines appear in the Propaganda tab</li>
+                <li>A ghost track shows real-world NASA/USSR dates for comparison</li>
+            </ul>
+            <h3>Victory</h3>
+            <ul>
+                <li>The race ends when someone completes a <b>Crewed Moon Landing</b></li>
+                <li>Highest reputation at that point wins</li>
+                <li>Or just keep playing and comparing - it's your race!</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+// === CONSTANTS ===
+const EPOCH = new Date(1951, 0, 1);
+
+const MILESTONE_MAP = {
+    'first_FirstFlight': 'First Launch',
+    'KarmanLine': 'Karman Line',
+    'BreakSoundBarrier': 'Sound Barrier (Crewed)',
+    'FirstSatellite': 'First Satellite',
+    'FirstSolarSat': 'First Solar-Powered Satellite',
+    'FirstPolarSat': 'First Polar Orbit Satellite',
+    'FirstScienceSat': 'First Science Satellite',
+    'AtmoSat': 'Atmospheric Analysis Satellite',
+    'EOSIRRad1': 'Infrared Radiometry Satellite',
+    'EOSIRRad2': 'IR Radiometry Follow-On',
+    'EOSCosmicRay1': 'Cosmic Ray Satellite Beyond LEO',
+    'EOSGrav1': 'Gravimetric Satellite',
+    'FirstNavSat-SCA': 'First Navigation Satellite',
+    'EarlyNavNetwork3-SCA': 'Early Navigation Network',
+    'XPlanesSupersonicMach2': 'X-Planes: Mach 2',
+    'XPlanesStratosphericResearch': 'X-Planes: Stratospheric',
+    'XPlanesHypersonic': 'X-Planes: Hypersonic',
+    'XPlanesHighAltitude': 'X-Planes: High Altitude',
+    'XPlanesKarman': 'X-Planes: Karman Line',
+    'first_OrbitRecover': 'Orbital Speed & Return',
+    'CrewedSuborbital': 'First Crewed Suborbital',
+    'first_OrbitCrewed': 'First Crewed Orbital',
+    'first_EVACrew': 'First EVA',
+    'first_Rendezvous': 'First Rendezvous',
+    'first_Docking': 'First Docking',
+    'LunarImpactor': 'Lunar Impactor',
+    'LunarFlyby': 'Lunar Flyby',
+    'LunarOrbiter': 'Lunar Orbiter',
+    'first_MoonLandingCrew': 'Crewed Moon Landing',
+    'RepeatMoonLanding': 'Repeat Moon Landing',
+    'first_MoonLanding': 'First Lunar Landing (Uncrewed)',
+    'LunarSurface': 'Lunar Surface Science',
+};
+
+const MILESTONE_ORDER = [
+    'First Launch','Karman Line','Sound Barrier (Crewed)',
+    'First Satellite','First Solar-Powered Satellite','First Polar Orbit Satellite',
+    'First Science Satellite','Atmospheric Analysis Satellite',
+    'X-Planes: Mach 2','X-Planes: Stratospheric','X-Planes: Hypersonic','X-Planes: High Altitude','X-Planes: Karman Line',
+    'Infrared Radiometry Satellite','IR Radiometry Follow-On','Cosmic Ray Satellite Beyond LEO','Gravimetric Satellite',
+    'First Navigation Satellite','Early Navigation Network',
+    'Orbital Speed & Return','First Crewed Suborbital','First Crewed Orbital',
+    'First EVA','First Rendezvous','First Docking',
+    'Lunar Impactor','Lunar Flyby','First Lunar Landing (Uncrewed)','Lunar Orbiter','Lunar Surface Science',
+    'Crewed Moon Landing','Repeat Moon Landing'
+];
+
+const TIERS = {
+    'Foundation': ['First Launch','Karman Line','Sound Barrier (Crewed)'],
+    'Early Space': ['First Satellite','First Solar-Powered Satellite','First Polar Orbit Satellite','First Science Satellite'],
+    'Earth Observation': ['Atmospheric Analysis Satellite','Infrared Radiometry Satellite','IR Radiometry Follow-On','Cosmic Ray Satellite Beyond LEO','Gravimetric Satellite'],
+    'X-Planes': ['X-Planes: Mach 2','X-Planes: Stratospheric','X-Planes: Hypersonic','X-Planes: High Altitude','X-Planes: Karman Line'],
+    'Navigation': ['First Navigation Satellite','Early Navigation Network'],
+    'Crewed Program': ['Orbital Speed & Return','First Crewed Suborbital','First Crewed Orbital','First EVA','First Rendezvous','First Docking'],
+    'Lunar Program': ['Lunar Impactor','Lunar Flyby','First Lunar Landing (Uncrewed)','Lunar Orbiter','Lunar Surface Science','Crewed Moon Landing','Repeat Moon Landing']
+};
+
+const HISTORICAL = {
+    'First Launch': '1957-10-04',
+    'Karman Line': '1944-06-20',
+    'Sound Barrier (Crewed)': '1947-10-14',
+    'First Satellite': '1957-10-04',
+    'First Solar-Powered Satellite': '1958-03-17',
+    'First Polar Orbit Satellite': '1959-02-28',
+    'First Science Satellite': '1958-01-31',
+    'Atmospheric Analysis Satellite': '1959-02-17',
+    'X-Planes: Mach 2': '1953-11-20',
+    'X-Planes: Karman Line': '1963-07-19',
+    'X-Planes: Hypersonic': '1961-11-09',
+    'First Navigation Satellite': '1960-04-13',
+    'Infrared Radiometry Satellite': '1960-04-01',
+    'Cosmic Ray Satellite Beyond LEO': '1959-08-07',
+    'Lunar Impactor': '1959-09-14',
+    'Lunar Flyby': '1959-01-04',
+    'First Crewed Suborbital': '1961-05-05',
+    'First Crewed Orbital': '1961-04-12',
+    'First EVA': '1965-03-18',
+    'First Docking': '1966-03-16',
+    'First Lunar Landing (Uncrewed)': '1966-02-03',
+    'Lunar Orbiter': '1966-08-10',
+    'Crewed Moon Landing': '1969-07-20'
+};
+
+const PROPAGANDA_TEMPLATES = [
+    "{AGENCY} SHOCKS THE WORLD: {MILESTONE}!",
+    "BREAKING: {AGENCY} ACHIEVES {MILESTONE} — RIVAL IN DISBELIEF",
+    "{AGENCY} DOMINATES THE HEAVENS WITH {MILESTONE}",
+    "HISTORIC DAY AS {AGENCY} COMPLETES {MILESTONE}",
+    "WORLD STUNNED: {AGENCY} FIRST TO ACHIEVE {MILESTONE}",
+    "{AGENCY} PROVES SUPERIORITY WITH {MILESTONE}",
+    "TRIUMPH! {AGENCY} CELEBRATES {MILESTONE}",
+    "RIVAL SCRAMBLES AS {AGENCY} ANNOUNCES {MILESTONE}",
+];
+
+// === STATE ===
+let state = loadState();
+
+function loadState() {
+    const saved = localStorage.getItem('spaceRace');
+    if (saved) return JSON.parse(saved);
+    return { p1: null, p2: null, news: [] };
+}
+function saveState() { localStorage.setItem('spaceRace', JSON.stringify(state)); }
+
+// === PARSER ===
+function parseSaveFile(text) {
+    const lines = text.split('\n');
+    const result = { milestones: {}, records: [], rep: 0, funds: 0, gameDate: 0, contractsCompleted: 0, contractsFailed: 0 };
+
+    // Extract reputation
+    let inRepBlock = false;
+    for (let i = 0; i < lines.length; i++) {
+        const t = lines[i].trim();
+        if (t === 'name = Reputation') inRepBlock = true;
+        if (inRepBlock && t.startsWith('rep = ')) {
+            result.rep = parseFloat(t.split('=')[1]);
+            inRepBlock = false;
+        }
+        if (t.startsWith('funds = ') && result.funds === 0) {
+            result.funds = parseFloat(t.split('=')[1]);
+        }
+    }
+
+    // Extract contracts
+    let inContract = false;
+    let depth = 0;
+    let current = {};
+
+    for (let i = 0; i < lines.length; i++) {
+        const t = lines[i].trim();
+
+        if (t === 'CONTRACT') {
+            inContract = true;
+            depth = 0;
+            current = {};
+            continue;
+        }
+        if (inContract) {
+            if (t === '{') depth++;
+            if (t === '}') {
+                depth--;
+                if (depth === 0) {
+                    inContract = false;
+                    if (current.state === 'Completed' && current.subtype) {
+                        result.contractsCompleted++;
+                        const milestone = MILESTONE_MAP[current.subtype];
+                        if (milestone && current.completionTime > 0) {
+                            if (!result.milestones[milestone] || current.completionTime < result.milestones[milestone]) {
+                                result.milestones[milestone] = current.completionTime;
+                            }
+                        }
+                        // Records
+                        if (current.subtype && current.subtype.startsWith('record') && current.title && current.completionTime) {
+                            result.records.push({ title: current.title, time: current.completionTime });
+                        }
+                        // Track latest date
+                        if (current.completionTime > result.gameDate) result.gameDate = current.completionTime;
+                    }
+                    if (current.state === 'Failed') result.contractsFailed++;
+                    if (current.state === 'Active' && current.completionTime > result.gameDate) {
+                        // Use acceptance time for active contracts to estimate current date
+                    }
+                }
+            }
+            if (depth === 1) {
+                const m = t.match(/^(\w+)\s*=\s*(.+)$/);
+                if (m) {
+                    if (m[1] === 'subtype') current.subtype = m[2].trim();
+                    if (m[1] === 'title') current.title = m[2].trim();
+                    if (m[1] === 'state') current.state = m[2].trim();
+                    if (m[1] === 'values') {
+                        const parts = m[2].split(',').map(v => parseFloat(v.trim()));
+                        // Last non-zero value is completion time
+                        for (let j = parts.length - 1; j >= 0; j--) {
+                            if (parts[j] > 100000000) { current.completionTime = parts[j]; break; }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Find latest timestamp for game date
+    const persistentMatch = text.match(/persistentTimestamp\s*=\s*(.+)/);
+    // Also check UT
+    const utMatch = text.match(/\bUT\s*=\s*([\d.]+)/);
+    if (utMatch) {
+        const ut = parseFloat(utMatch[1]);
+        if (ut > result.gameDate) result.gameDate = ut;
+    }
+
+    return result;
+}
+
+function tsToDate(ts) {
+    const d = new Date(EPOCH.getTime() + ts * 1000);
+    return d.toISOString().split('T')[0];
+}
+
+function tsToYear(ts) {
+    return new Date(EPOCH.getTime() + ts * 1000).getFullYear();
+}
+
+// === IMPORT ===
+function importSave(playerNum) {
+    const nameInput = document.getElementById('p' + playerNum + 'NameInput');
+    const fileInput = document.getElementById('p' + playerNum + 'File');
+    const statusEl = document.getElementById('p' + playerNum + 'Status');
+    const name = nameInput.value.trim() || ('Player ' + playerNum);
+
+    if (!fileInput.files.length) { statusEl.textContent = 'No file selected.'; return; }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const data = parseSaveFile(e.target.result);
+        const playerKey = 'p' + playerNum;
+        const oldData = state[playerKey];
+
+        state[playerKey] = {
+            name: name,
+            rep: data.rep,
+            funds: data.funds,
+            gameDate: data.gameDate,
+            milestones: data.milestones,
+            records: data.records,
+            contractsCompleted: data.contractsCompleted,
+            contractsFailed: data.contractsFailed,
+            importTime: new Date().toISOString()
+        };
+
+        // Generate news for new milestones
+        const otherKey = playerNum === 1 ? 'p2' : 'p1';
+        const otherData = state[otherKey];
+
+        for (const [milestone, time] of Object.entries(data.milestones)) {
+            if (oldData && oldData.milestones && oldData.milestones[milestone]) continue; // Already known
+
+            const isFirst = !otherData || !otherData.milestones || !otherData.milestones[milestone] || time < otherData.milestones[milestone];
+            const template = PROPAGANDA_TEMPLATES[Math.floor(Math.random() * PROPAGANDA_TEMPLATES.length)];
+            const headline = template.replace('{AGENCY}', name.toUpperCase()).replace('{MILESTONE}', milestone.toUpperCase());
+
+            state.news.unshift({
+                date: tsToDate(time),
+                headline: headline,
+                player: playerNum,
+                milestone: milestone,
+                first: isFirst
+            });
+        }
+
+        // Sort news by in-game date
+        state.news.sort((a, b) => (b.date > a.date ? 1 : -1));
+
+        saveState();
+        const milestoneCount = Object.keys(data.milestones).length;
+        statusEl.textContent = 'Imported! ' + milestoneCount + ' milestones, Rep: ' + data.rep.toFixed(0) + ', Date: ' + tsToDate(data.gameDate);
+        render();
+    };
+    reader.readAsText(fileInput.files[0]);
+}
+
+// === RENDER ===
+function render() {
+    renderScoreBar();
+    renderDashboard();
+    renderTimeline();
+    renderNews();
+}
+
+function renderScoreBar() {
+    if (state.p1) {
+        document.getElementById('p1Name').textContent = state.p1.name.toUpperCase();
+        document.getElementById('p1Rep').textContent = Math.floor(state.p1.rep) + ' REP';
+        document.getElementById('p1Sub').textContent = tsToDate(state.p1.gameDate) + ' | $' + Math.floor(state.p1.funds).toLocaleString();
+    }
+    if (state.p2) {
+        document.getElementById('p2Name').textContent = state.p2.name.toUpperCase();
+        document.getElementById('p2Rep').textContent = Math.floor(state.p2.rep) + ' REP';
+        document.getElementById('p2Sub').textContent = tsToDate(state.p2.gameDate) + ' | $' + Math.floor(state.p2.funds).toLocaleString();
+    }
+}
+
+function renderDashboard() {
+    // Race Progress
+    const rp = document.getElementById('raceProgress');
+    if (state.p1 || state.p2) {
+        const p1m = state.p1 ? Object.keys(state.p1.milestones).length : 0;
+        const p2m = state.p2 ? Object.keys(state.p2.milestones).length : 0;
+        const total = MILESTONE_ORDER.length;
+        const p1pct = ((p1m / total) * 100).toFixed(0);
+        const p2pct = ((p2m / total) * 100).toFixed(0);
+        const p1name = state.p1 ? state.p1.name : 'P1';
+        const p2name = state.p2 ? state.p2.name : 'P2';
+
+        rp.innerHTML = `
+            <div class="stat-row"><span class="label">${p1name}</span><span class="val p1-color">${p1m}/${total} (${p1pct}%)</span></div>
+            <div class="progress-bar"><div class="progress-seg" style="width:${p1pct}%;background:#42a5f5">${p1pct}%</div></div>
+            <div class="stat-row"><span class="label">${p2name}</span><span class="val p2-color">${p2m}/${total} (${p2pct}%)</span></div>
+            <div class="progress-bar"><div class="progress-seg" style="width:${p2pct}%;background:#ef5350">${p2pct}%</div></div>
+        `;
+    }
+
+    // Key Stats
+    const ks = document.getElementById('keyStats');
+    if (state.p1 || state.p2) {
+        let html = '';
+        const fields = [
+            ['Reputation', p => Math.floor(p.rep)],
+            ['Funds', p => '$' + Math.floor(p.funds).toLocaleString()],
+            ['In-Game Date', p => tsToDate(p.gameDate)],
+            ['Contracts Done', p => p.contractsCompleted],
+            ['Contracts Failed', p => p.contractsFailed],
+            ['Success Rate', p => p.contractsCompleted > 0 ? ((p.contractsCompleted / (p.contractsCompleted + p.contractsFailed)) * 100).toFixed(0) + '%' : 'N/A'],
+        ];
+        const p1name = state.p1 ? state.p1.name : '--';
+        const p2name = state.p2 ? state.p2.name : '--';
+        html += `<div class="stat-row" style="border-bottom:1px solid rgba(255,255,255,0.06);padding-bottom:6px;margin-bottom:4px"><span class="label"></span><span class="val p1-color" style="font-size:0.8em">${p1name}</span><span class="val p2-color" style="font-size:0.8em">${p2name}</span></div>`;
+        for (const [label, fn] of fields) {
+            const v1 = state.p1 ? fn(state.p1) : '--';
+            const v2 = state.p2 ? fn(state.p2) : '--';
+            html += `<div class="stat-row"><span class="label">${label}</span><span class="val p1-color">${v1}</span><span class="val p2-color">${v2}</span></div>`;
+        }
+        ks.innerHTML = html;
+    }
+
+    // Milestones Won (first to achieve)
+    const mw = document.getElementById('milestonesWon');
+    if (state.p1 && state.p2) {
+        let p1wins = 0, p2wins = 0, ties = 0;
+        for (const m of MILESTONE_ORDER) {
+            const t1 = state.p1.milestones[m];
+            const t2 = state.p2.milestones[m];
+            if (t1 && t2) {
+                if (t1 < t2) p1wins++;
+                else if (t2 < t1) p2wins++;
+                else ties++;
+            } else if (t1 && !t2) p1wins++;
+            else if (t2 && !t1) p2wins++;
+        }
+        const total = p1wins + p2wins + ties || 1;
+        mw.innerHTML = `
+            <div class="stat-row"><span class="label">${state.p1.name} first</span><span class="val p1-color">${p1wins}</span></div>
+            <div class="stat-row"><span class="label">${state.p2.name} first</span><span class="val p2-color">${p2wins}</span></div>
+            <div class="stat-row"><span class="label">Ties</span><span class="val" style="color:#ffd54f">${ties}</span></div>
+            <div class="progress-bar">
+                <div class="progress-seg" style="width:${(p1wins/total*100).toFixed(0)}%;background:#42a5f5">${p1wins}</div>
+                <div class="progress-seg" style="width:${(ties/total*100).toFixed(0)}%;background:#ffd54f">${ties}</div>
+                <div class="progress-seg" style="width:${(p2wins/total*100).toFixed(0)}%;background:#ef5350">${p2wins}</div>
+            </div>
+        `;
+    }
+
+    // Head to Head by tier
+    const hth = document.getElementById('headToHead');
+    if (state.p1 && state.p2) {
+        let html = '';
+        for (const [tier, milestones] of Object.entries(TIERS)) {
+            const p1done = milestones.filter(m => state.p1.milestones[m]).length;
+            const p2done = milestones.filter(m => state.p2.milestones[m]).length;
+            const total = milestones.length;
+            html += `<div class="stat-row"><span class="label">${tier}</span><span class="val p1-color">${p1done}/${total}</span><span class="val p2-color">${p2done}/${total}</span></div>`;
+        }
+        hth.innerHTML = html;
+    }
+}
+
+function renderTimeline() {
+    const el = document.getElementById('timelineContent');
+    if (!state.p1 && !state.p2) return;
+
+    let html = '<div class="timeline">';
+
+    // Header row
+    const p1name = state.p1 ? state.p1.name : 'P1';
+    const p2name = state.p2 ? state.p2.name : 'P2';
+    html += `<div class="tl-row" style="margin-bottom:12px">
+        <div class="tl-left"><b class="p1-color">${p1name}</b></div>
+        <div class="tl-center" style="width:60px;font-size:0.7em;color:#37474f">HISTORY</div>
+        <div class="tl-right"><b class="p2-color">${p2name}</b></div>
+    </div>`;
+
+    let currentTier = '';
+    for (const m of MILESTONE_ORDER) {
+        // Tier header
+        for (const [tier, milestones] of Object.entries(TIERS)) {
+            if (milestones[0] === m && tier !== currentTier) {
+                currentTier = tier;
+                html += `<div class="tl-tier">${tier}</div>`;
+            }
+        }
+
+        const t1 = state.p1 ? state.p1.milestones[m] : null;
+        const t2 = state.p2 ? state.p2.milestones[m] : null;
+        const hist = HISTORICAL[m];
+
+        let dotClass = 'none';
+        let p1First = false, p2First = false;
+        if (t1 && t2) {
+            if (t1 < t2) { dotClass = 'p1'; p1First = true; }
+            else if (t2 < t1) { dotClass = 'p2'; p2First = true; }
+            else dotClass = 'both';
+        } else if (t1) { dotClass = 'p1'; p1First = true; }
+        else if (t2) { dotClass = 'p2'; p2First = true; }
+
+        const p1date = t1 ? tsToDate(t1) : '';
+        const p2date = t2 ? tsToDate(t2) : '';
+
+        html += `<div class="tl-row">`;
+        html += `<div class="tl-left">`;
+        if (t1) {
+            html += `<span class="tl-date ${p1First ? 'tl-first' : ''}">${p1date}</span>`;
+            if (p1First) html += ' <span class="tl-first">&#9733;</span>';
+        }
+        html += `</div>`;
+
+        html += `<div class="tl-center"><div class="tl-line"></div><div class="tl-dot ${dotClass}"></div></div>`;
+
+        html += `<div class="tl-right">`;
+        html += `<span class="tl-milestone-name">${m}</span>`;
+        if (t2) {
+            html += ` <span class="tl-date ${p2First ? 'tl-first' : ''}">${p2date}</span>`;
+            if (p2First) html += ' <span class="tl-first">&#9733;</span>';
+        }
+        if (hist) html += ` <span class="tl-date" style="color:#2a3050" title="Historical">(${hist})</span>`;
+        html += `</div>`;
+        html += `</div>`;
+    }
+
+    html += '</div>';
+    el.innerHTML = html;
+}
+
+function renderNews() {
+    const el = document.getElementById('newsContent');
+    if (state.news.length === 0) return;
+
+    let html = '';
+    for (const item of state.news.slice(0, 50)) {
+        const color = item.player === 1 ? 'p1-color' : 'p2-color';
+        html += `<div class="news-item">
+            <span class="date">${item.date}</span>
+            ${item.first ? '<span class="first-tag"> WORLD FIRST </span>' : ''}
+            <div class="headline ${color}">${item.headline}</div>
+        </div>`;
+    }
+    el.innerHTML = html;
+}
+
+// === TABS ===
+function switchTab(tab) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelector(`.tab[onclick="switchTab('${tab}')"]`).classList.add('active');
+    document.getElementById('panel-' + tab).classList.add('active');
+}
+
+// === SYNC ===
+function exportState() {
+    const blob = new Blob([JSON.stringify(state, null, 2)], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'space_race_state.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    document.getElementById('syncStatus').textContent = 'State exported! Send the file to your opponent.';
+}
+
+function importState(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const imported = JSON.parse(e.target.result);
+            // Merge: keep local player data, add opponent data
+            if (imported.p1) state.p1 = imported.p1;
+            if (imported.p2) state.p2 = imported.p2;
+            if (imported.news) {
+                const existingDates = new Set(state.news.map(n => n.date + n.headline));
+                for (const item of imported.news) {
+                    if (!existingDates.has(item.date + item.headline)) {
+                        state.news.push(item);
+                    }
+                }
+                state.news.sort((a, b) => (b.date > a.date ? 1 : -1));
+            }
+            saveState();
+            render();
+            document.getElementById('syncStatus').textContent = 'State imported! Dashboard updated.';
+            // Update name inputs
+            if (state.p1) document.getElementById('p1NameInput').value = state.p1.name;
+            if (state.p2) document.getElementById('p2NameInput').value = state.p2.name;
+        } catch(err) {
+            document.getElementById('syncStatus').textContent = 'Error: Invalid state file.';
+        }
+    };
+    reader.readAsText(file);
+}
+
+// === INIT ===
+function init() {
+    if (state.p1) {
+        document.getElementById('p1NameInput').value = state.p1.name;
+        document.getElementById('p1Status').textContent = 'Last import: ' + (state.p1.importTime || 'unknown');
+    }
+    if (state.p2) {
+        document.getElementById('p2NameInput').value = state.p2.name;
+        document.getElementById('p2Status').textContent = 'Last import: ' + (state.p2.importTime || 'unknown');
+    }
+    render();
+}
+
+init();
+</script>
+</body>
+</html>
