@@ -6,61 +6,61 @@
 <title>SPACE RACE</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',sans-serif;background:#f8f9fa;color:#1a1a1a;min-height:100vh;padding:20px}
+body{font-family:'Segoe UI',sans-serif;background:#0d1117;color:#c9d1d9;min-height:100vh;padding:20px}
 .container{max-width:900px;margin:0 auto}
-h1{text-align:center;font-size:1.8em;color:#1a1a1a;letter-spacing:6px;margin-bottom:4px}
-.sub{text-align:center;color:#999;font-size:0.8em;margin-bottom:24px}
+h1{text-align:center;font-size:1.8em;color:#e6edf3;letter-spacing:6px;margin-bottom:4px}
+.sub{text-align:center;color:#484f58;font-size:0.8em;margin-bottom:24px}
 
 .score{display:flex;justify-content:space-between;align-items:center;padding:24px;
-background:#fff;border:1px solid #e0e0e0;border-radius:12px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
+background:#161b22;border:1px solid #21262d;border-radius:12px;margin-bottom:20px}
 .player{text-align:center;flex:1}
 .player .name{font-size:1em;font-weight:700;letter-spacing:2px;margin-bottom:4px}
 .player .rep{font-size:2.2em;font-weight:900}
-.player .info{font-size:0.75em;color:#999;margin-top:4px}
-.vs{color:#ccc;font-size:1.5em;font-weight:900;padding:0 20px}
-.p1{color:#2563eb}.p2{color:#dc2626}
+.player .info{font-size:0.75em;color:#484f58;margin-top:4px}
+.vs{color:#30363d;font-size:1.5em;font-weight:900;padding:0 20px}
+.p1{color:#58a6ff}.p2{color:#f85149}
 
 .tabs{display:flex;gap:4px;margin-bottom:20px}
-.tab{padding:8px 18px;background:#fff;border:1px solid #e0e0e0;border-radius:8px;
-cursor:pointer;color:#999;font-size:0.85em;transition:all 0.2s}
-.tab.active{color:#1a1a1a;border-color:#1a1a1a;background:#fff;font-weight:600}
-.tab:hover{background:#f0f0f0}
+.tab{padding:8px 18px;background:#161b22;border:1px solid #21262d;border-radius:8px;
+cursor:pointer;color:#484f58;font-size:0.85em;transition:all 0.2s}
+.tab.active{color:#e6edf3;border-color:#e6edf3;background:#21262d;font-weight:600}
+.tab:hover{background:#1c2028}
 .panel{display:none}.panel.active{display:block}
 
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
-.card{background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
-.card h3{font-size:0.7em;text-transform:uppercase;color:#999;letter-spacing:1px;margin-bottom:12px}
+.card{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:18px}
+.card h3{font-size:0.7em;text-transform:uppercase;color:#484f58;letter-spacing:1px;margin-bottom:12px}
 .row{display:flex;justify-content:space-between;padding:4px 0;font-size:0.85em}
-.row .l{color:#666}
-.bar{display:flex;height:18px;border-radius:9px;overflow:hidden;background:#eee;margin:6px 0}
+.row .l{color:#8b949e}
+.bar{display:flex;height:18px;border-radius:9px;overflow:hidden;background:#21262d;margin:6px 0}
 .bar div{display:flex;align-items:center;justify-content:center;font-size:0.6em;font-weight:700;color:#fff}
 
-.tl-item{display:flex;align-items:center;padding:7px 0;border-bottom:1px solid #f0f0f0;font-size:0.85em}
+.tl-item{display:flex;align-items:center;padding:7px 0;border-bottom:1px solid #161b22;font-size:0.85em}
 .tl-p1{flex:1;text-align:right;padding-right:14px;min-width:0}
-.tl-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;border:2px solid #ddd}
-.tl-dot.w1{background:#2563eb;border-color:#2563eb}.tl-dot.w2{background:#dc2626;border-color:#dc2626}
-.tl-dot.tie{background:#f59e0b;border-color:#f59e0b}.tl-dot.none{background:#f0f0f0}
+.tl-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;border:2px solid #21262d}
+.tl-dot.w1{background:#58a6ff;border-color:#58a6ff}.tl-dot.w2{background:#f85149;border-color:#f85149}
+.tl-dot.tie{background:#d29922;border-color:#d29922}.tl-dot.none{background:#161b22}
 .tl-p2{flex:1;padding-left:14px;min-width:0}
-.tl-name{color:#444;font-size:0.85em}
-.tl-date{font-size:0.75em;color:#999}
-.tl-first{color:#f59e0b;font-weight:600}
-.tl-tier{font-size:0.65em;color:#bbb;letter-spacing:2px;text-transform:uppercase;padding:14px 0 4px;text-align:center;font-weight:600}
-.tl-hist{font-size:0.65em;color:#ccc;margin-left:4px}
+.tl-name{color:#8b949e;font-size:0.85em}
+.tl-date{font-size:0.75em;color:#484f58}
+.tl-first{color:#d29922;font-weight:600}
+.tl-tier{font-size:0.65em;color:#30363d;letter-spacing:2px;text-transform:uppercase;padding:14px 0 4px;text-align:center;font-weight:600}
+.tl-hist{font-size:0.65em;color:#21262d;margin-left:4px}
 
-.news-item{padding:10px 0;border-bottom:1px solid #f0f0f0;font-size:0.85em}
-.news-item .date{color:#bbb;font-size:0.8em}
-.news-item .tag{color:#f59e0b;font-weight:700;font-size:0.7em}
+.news-item{padding:10px 0;border-bottom:1px solid #21262d;font-size:0.85em}
+.news-item .date{color:#30363d;font-size:0.8em}
+.news-item .tag{color:#d29922;font-weight:700;font-size:0.7em}
 
-.import-box{background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:18px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
-.import-box h3{font-size:0.7em;text-transform:uppercase;color:#999;letter-spacing:1px;margin-bottom:8px}
+.import-box{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:18px;margin-bottom:12px}
+.import-box h3{font-size:0.7em;text-transform:uppercase;color:#484f58;letter-spacing:1px;margin-bottom:8px}
 .import-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.import-row input[type=text]{background:#f8f9fa;border:1px solid #ddd;color:#1a1a1a;padding:6px 10px;border-radius:6px;font-size:0.85em;width:150px}
-.import-row input[type=file]{font-size:0.8em;color:#666}
-.btn{padding:6px 16px;border:1px solid #1a1a1a;background:#1a1a1a;color:#fff;border-radius:6px;cursor:pointer;font-size:0.82em}
-.btn:hover{background:#333}
-.btn-red{border-color:#dc2626;background:#dc2626;color:#fff}
-.btn-red:hover{background:#b91c1c}
-.status{font-size:0.75em;color:#999;margin-top:6px}
+.import-row input[type=text]{background:#0d1117;border:1px solid #21262d;color:#c9d1d9;padding:6px 10px;border-radius:6px;font-size:0.85em;width:150px}
+.import-row input[type=file]{font-size:0.8em;color:#484f58}
+.btn{padding:6px 16px;border:1px solid #e6edf3;background:#21262d;color:#e6edf3;border-radius:6px;cursor:pointer;font-size:0.82em}
+.btn:hover{background:#30363d}
+.btn-red{border-color:#f85149;background:#f8514920;color:#f85149}
+.btn-red:hover{background:#f8514940}
+.status{font-size:0.75em;color:#484f58;margin-top:6px}
 </style>
 </head>
 <body>
