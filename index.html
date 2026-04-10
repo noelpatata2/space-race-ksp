@@ -143,7 +143,7 @@ function d2s(ts){return new Date(EPOCH.getTime()+ts*1000).toISOString().split('T
 function tab(t){document.querySelectorAll('.tab').forEach((e,i)=>{e.classList.toggle('active',['dash','tl','news','imp'][i]===t)});
 document.querySelectorAll('.panel').forEach((e,i)=>{e.classList.toggle('active',['dash','tl','news','imp'][i]===t)})}
 
-async function load(){try{const r=await fetch(DB+'/race.json');const d=await r.json();if(d){S=d;return}}catch(e){}
+async function load(){try{const r=await fetch(DB+'/race.json?t='+Date.now());const d=await r.json();if(d){S=d;localStorage.setItem('sr',JSON.stringify(S));return}}catch(e){console.warn('Firebase offline',e)}
 const s=localStorage.getItem('sr');if(s)S=JSON.parse(s)}
 async function save(){localStorage.setItem('sr',JSON.stringify(S));
 try{await fetch(DB+'/race.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(S)})}catch(e){}}
