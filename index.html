@@ -27,11 +27,20 @@ cursor:pointer;color:#484f58;font-size:0.85em;transition:all 0.2s}
 .tab:hover{background:#1c2028}
 .panel{display:none}.panel.active{display:block}
 
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.stats{display:grid;grid-template-columns:1fr;gap:14px;margin-bottom:20px}
+.stats.two-col{grid-template-columns:1fr 1fr}
+table.data{width:100%;border-collapse:collapse;font-size:0.85em}
+table.data th{text-align:right;color:#484f58;font-size:0.75em;font-weight:600;padding:6px 0;border-bottom:1px solid #21262d}
+table.data th:first-child{text-align:left}
+table.data td{padding:6px 0;border-bottom:1px solid #161b22}
+table.data td:first-child{color:#8b949e;text-align:left}
+table.data td:nth-child(2){text-align:right;min-width:80px}
+table.data td:nth-child(3){text-align:right;min-width:80px}
 .card{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:18px}
 .card h3{font-size:0.7em;text-transform:uppercase;color:#484f58;letter-spacing:1px;margin-bottom:12px}
-.row{display:flex;justify-content:space-between;padding:4px 0;font-size:0.85em}
-.row .l{color:#8b949e}
+.row{display:grid;grid-template-columns:1fr auto auto;gap:8px;padding:4px 0;font-size:0.85em}
+.row .l{color:#8b949e;text-align:left}
+.row .p1,.row .p2{text-align:right;min-width:70px}
 .bar{display:flex;height:18px;border-radius:9px;overflow:hidden;background:#21262d;margin:6px 0}
 .bar div{display:flex;align-items:center;justify-content:center;font-size:0.6em;font-weight:700;color:#fff}
 
@@ -202,25 +211,25 @@ const m1=S.p1?Object.keys(S.p1.milestones).length:0,m2=S.p2?Object.keys(S.p2.mil
 let w1=0,w2=0;if(S.p1&&S.p2)for(const m of MO){const t1=S.p1.milestones[m],t2=S.p2.milestones[m];
 if(t1&&t2){if(t1<t2)w1++;else if(t2<t1)w2++}else if(t1)w1++;else if(t2)w2++}
 const tot=w1+w2||1;
-let h=`<div class="card"><h3>Milestones</h3>
-<div class="row"><span class="l">${n1}</span><span class="p1">${m1}/${MO.length}</span></div>
-<div class="bar"><div style="width:${m1/MO.length*100}%;background:#58a6ff"></div></div>
-<div class="row"><span class="l">${n2}</span><span class="p2">${m2}/${MO.length}</span></div>
-<div class="bar"><div style="width:${m2/MO.length*100}%;background:#f85149"></div></div></div>`;
-h+=`<div class="card"><h3>Firsts Won</h3>
-<div class="row"><span class="l">${n1}</span><span class="p1">${w1}</span></div>
-<div class="row"><span class="l">${n2}</span><span class="p2">${w2}</span></div>
-<div class="bar"><div style="width:${w1/tot*100}%;background:#58a6ff">${w1}</div><div style="width:${w2/tot*100}%;background:#f85149">${w2}</div></div></div>`;
-const fields=[['Reputation',p=>Math.floor(p.rep)],['Funds',p=>'$'+Math.floor(p.funds).toLocaleString()],
-['Contracts',p=>p.contractsCompleted],['Success Rate',p=>p.contractsCompleted?(p.contractsCompleted/(p.contractsCompleted+p.contractsFailed)*100).toFixed(0)+'%':'--']];
-h+=`<div class="card"><h3>Stats</h3>`;
-for(const[l,fn]of fields)h+=`<div class="row"><span class="l">${l}</span><span class="p1">${S.p1?fn(S.p1):'--'}</span><span class="p2">${S.p2?fn(S.p2):'--'}</span></div>`;
-h+=`</div>`;
-h+=`<div class="card"><h3>By Category</h3>`;
+const v=(p,fn)=>p?fn(p):'--';
+let h=`<div class="card"><h3>Overview</h3><table class="data">
+<tr><th></th><th class="p1">${n1}</th><th class="p2">${n2}</th></tr>
+<tr><td>Reputation</td><td class="p1">${v(S.p1,p=>Math.floor(p.rep))}</td><td class="p2">${v(S.p2,p=>Math.floor(p.rep))}</td></tr>
+<tr><td>Funds</td><td class="p1">${v(S.p1,p=>'$'+Math.floor(p.funds).toLocaleString())}</td><td class="p2">${v(S.p2,p=>'$'+Math.floor(p.funds).toLocaleString())}</td></tr>
+<tr><td>Milestones</td><td class="p1">${m1}/${MO.length}</td><td class="p2">${m2}/${MO.length}</td></tr>
+<tr><td>Firsts Won</td><td class="p1">${w1}</td><td class="p2">${w2}</td></tr>
+<tr><td>Contracts</td><td class="p1">${v(S.p1,p=>p.contractsCompleted)}</td><td class="p2">${v(S.p2,p=>p.contractsCompleted)}</td></tr>
+<tr><td>Success Rate</td><td class="p1">${v(S.p1,p=>p.contractsCompleted?(p.contractsCompleted/(p.contractsCompleted+p.contractsFailed)*100).toFixed(0)+'%':'--')}</td><td class="p2">${v(S.p2,p=>p.contractsCompleted?(p.contractsCompleted/(p.contractsCompleted+p.contractsFailed)*100).toFixed(0)+'%':'--')}</td></tr>
+<tr><td>In-Game Date</td><td class="p1">${v(S.p1,p=>d2s(p.gameDate))}</td><td class="p2">${v(S.p2,p=>d2s(p.gameDate))}</td></tr>
+</table>
+<div style="margin-top:12px"><div class="bar"><div style="width:${w1/tot*100}%;background:#58a6ff">${w1}</div><div style="width:${w2/tot*100}%;background:#f85149">${w2}</div></div></div>
+</div>`;
+h+=`<div class="card"><h3>By Category</h3><table class="data">
+<tr><th></th><th class="p1">${n1}</th><th class="p2">${n2}</th></tr>`;
 for(const[tier,[s,e]]of Object.entries(TIERS)){const sl=MO.slice(s,e+1);
 const c1=sl.filter(m=>S.p1&&S.p1.milestones[m]).length,c2=sl.filter(m=>S.p2&&S.p2.milestones[m]).length;
-h+=`<div class="row"><span class="l">${tier}</span><span class="p1">${c1}/${sl.length}</span><span class="p2">${c2}/${sl.length}</span></div>`}
-h+=`</div>`;el.innerHTML=h}
+h+=`<tr><td>${tier}</td><td class="p1">${c1}/${sl.length}</td><td class="p2">${c2}/${sl.length}</td></tr>`}
+h+=`</table></div>`;el.innerHTML=h}
 
 function renderTL(){
 const el=document.getElementById('tlEl');if(!S.p1&&!S.p2){el.innerHTML='';return}
