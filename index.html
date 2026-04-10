@@ -222,7 +222,7 @@ let h=`<div class="card"><h3>Resumen</h3><table class="data">
 <tr><td>Tasa de Exito</td><td class="p1">${v(S.p1,p=>p.contractsCompleted?(p.contractsCompleted/(p.contractsCompleted+p.contractsFailed)*100).toFixed(0)+'%':'--')}</td><td class="p2">${v(S.p2,p=>p.contractsCompleted?(p.contractsCompleted/(p.contractsCompleted+p.contractsFailed)*100).toFixed(0)+'%':'--')}</td></tr>
 <tr><td>Fecha en Juego</td><td class="p1">${v(S.p1,p=>d2s(p.gameDate))}</td><td class="p2">${v(S.p2,p=>d2s(p.gameDate))}</td></tr>
 </table>
-<div style="margin-top:12px"><div class="bar"><div style="width:${w1/tot*100}%;background:#58a6ff">${w1}</div><div style="width:${w2/tot*100}%;background:#f85149">${w2}</div></div></div>
+<div style="margin-top:12px"><div class="bar">${w1+w2>0?`<div style="width:${w1/tot*100}%;background:#58a6ff">${w1>0?w1:''}</div><div style="width:${w2/tot*100}%;background:#f85149">${w2>0?w2:''}</div>`:''}</div></div>
 </div>`;
 h+=`<div class="card"><h3>Por Categoria</h3><table class="data">
 <tr><th></th><th class="p1">${n1}</th><th class="p2">${n2}</th></tr>`;
