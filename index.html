@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SPACE RACE</title>
+<title>CARRERA ESPACIAL</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Segoe UI',sans-serif;background:#0d1117;color:#c9d1d9;min-height:100vh;padding:20px}
@@ -74,8 +74,8 @@ table.data td:nth-child(3){text-align:right;min-width:80px}
 </head>
 <body>
 <div class="container">
-    <h1>SPACE RACE</h1>
-    <p class="sub">KSP RP-1 Career Comparison</p>
+    <h1>CARRERA ESPACIAL</h1>
+    <p class="sub">KSP RP-1 - Comparador de Carreras</p>
 
     <div class="score">
         <div class="player"><div class="name p1" id="n1">--</div><div class="rep p1" id="r1">--</div><div class="info" id="i1"></div></div>
@@ -84,59 +84,59 @@ table.data td:nth-child(3){text-align:right;min-width:80px}
     </div>
 
     <div class="tabs">
-        <div class="tab active" onclick="tab('dash')">Overview</div>
-        <div class="tab" onclick="tab('tl')">Milestones</div>
-        <div class="tab" onclick="tab('news')">News</div>
-        <div class="tab" onclick="tab('imp')">Import</div>
+        <div class="tab active" onclick="tab('dash')">Resumen</div>
+        <div class="tab" onclick="tab('tl')">Hitos</div>
+        <div class="tab" onclick="tab('news')">Noticias</div>
+        <div class="tab" onclick="tab('imp')">Importar</div>
     </div>
 
     <div class="panel active" id="p-dash"><div class="stats" id="statsEl"></div></div>
     <div class="panel" id="p-tl"><div id="tlEl"></div></div>
     <div class="panel" id="p-news"><div id="newsEl"></div></div>
     <div class="panel" id="p-imp">
-        <div class="import-box"><h3>Player 1</h3>
-            <div class="import-row"><input type="text" id="n1i" placeholder="Name"><input type="file" id="f1" accept=".sfs"><button class="btn" onclick="imp(1)">IMPORT</button></div>
+        <div class="import-box"><h3>Jugador 1</h3>
+            <div class="import-row"><input type="text" id="n1i" placeholder="Nombre"><input type="file" id="f1" accept=".sfs"><button class="btn" onclick="imp(1)">IMPORTAR</button></div>
             <div class="status" id="s1"></div></div>
-        <div class="import-box"><h3>Player 2</h3>
-            <div class="import-row"><input type="text" id="n2i" placeholder="Name"><input type="file" id="f2" accept=".sfs"><button class="btn" onclick="imp(2)">IMPORT</button></div>
+        <div class="import-box"><h3>Jugador 2</h3>
+            <div class="import-row"><input type="text" id="n2i" placeholder="Nombre"><input type="file" id="f2" accept=".sfs"><button class="btn" onclick="imp(2)">IMPORTAR</button></div>
             <div class="status" id="s2"></div></div>
-        <div class="import-box"><h3>Data</h3>
+        <div class="import-box"><h3>Datos</h3>
             <div class="import-row">
-                <button class="btn" onclick="sync()">REFRESH FROM CLOUD</button>
-                <button class="btn btn-red" onclick="if(confirm('Reset all data?')){fetch(DB+'/race.json',{method:'DELETE'}).then(()=>location.reload())}">RESET</button>
+                <button class="btn" onclick="sync()">ACTUALIZAR DESDE LA NUBE</button>
+                <button class="btn btn-red" onclick="if(confirm('Borrar todos los datos?')){fetch(DB+'/race.json',{method:'DELETE'}).then(()=>location.reload())}">RESETEAR</button>
             </div><div class="status" id="ss"></div></div>
     </div>
 </div>
 <script>
 const DB='https://ksp-rp1-default-rtdb.europe-west1.firebasedatabase.app';
 const EPOCH=new Date(1951,0,1);
-const MM={'first_FirstFlight':'First Launch','KarmanLine':'Karman Line','BreakSoundBarrier':'Sound Barrier (Crewed)',
-'FirstSatellite':'First Satellite','FirstSolarSat':'First Solar Satellite','FirstPolarSat':'First Polar Satellite',
-'FirstScienceSat':'First Science Satellite','AtmoSat':'Atmospheric Analysis Sat',
-'EOSIRRad1':'IR Radiometry Satellite','EOSIRRad2':'IR Radiometry Follow-On',
-'EOSCosmicRay1':'Cosmic Ray Sat Beyond LEO','EOSGrav1':'Gravimetric Satellite',
-'FirstNavSat-SCA':'First Nav Satellite','EarlyNavNetwork3-SCA':'Nav Network',
-'XPlanesSupersonicMach2':'X-Planes: Mach 2','XPlanesStratosphericResearch':'X-Planes: Stratospheric',
-'XPlanesHypersonic':'X-Planes: Hypersonic','XPlanesHighAltitude':'X-Planes: High Altitude',
-'XPlanesKarman':'X-Planes: Karman Line','first_OrbitRecover':'Orbital Speed & Return',
-'CrewedSuborbital':'Crewed Suborbital','first_OrbitCrewed':'Crewed Orbital',
-'first_EVACrew':'First EVA','first_Rendezvous':'First Rendezvous','first_Docking':'First Docking',
-'LunarImpactor':'Lunar Impactor','LunarFlyby':'Lunar Flyby','LunarOrbiter':'Lunar Orbiter',
-'first_MoonLanding':'Lunar Landing (Uncrewed)','first_MoonLandingCrew':'Crewed Moon Landing'};
-const MO=['First Launch','Karman Line','Sound Barrier (Crewed)','First Satellite','First Solar Satellite',
-'First Polar Satellite','First Science Satellite','Atmospheric Analysis Sat',
-'X-Planes: Mach 2','X-Planes: Stratospheric','X-Planes: Hypersonic','X-Planes: High Altitude','X-Planes: Karman Line',
-'IR Radiometry Satellite','IR Radiometry Follow-On','Cosmic Ray Sat Beyond LEO','Gravimetric Satellite',
-'First Nav Satellite','Nav Network','Orbital Speed & Return','Crewed Suborbital','Crewed Orbital',
-'First EVA','First Rendezvous','First Docking','Lunar Impactor','Lunar Flyby','Lunar Landing (Uncrewed)',
-'Lunar Orbiter','Crewed Moon Landing'];
-const TIERS={'Foundation':[0,2],'Early Space':[3,7],'X-Planes':[8,12],'Earth Observation':[13,16],
-'Navigation':[17,18],'Crewed':[19,24],'Lunar':[25,29]};
-const HIST={'First Launch':'1957-10-04','First Satellite':'1957-10-04','Sound Barrier (Crewed)':'1947-10-14',
-'First Solar Satellite':'1958-03-17','Crewed Orbital':'1961-04-12','Lunar Impactor':'1959-09-14',
-'Crewed Moon Landing':'1969-07-20','First EVA':'1965-03-18','X-Planes: Mach 2':'1953-11-20'};
-const HL=['%s SHOCKS THE WORLD: %m!','BREAKING: %s ACHIEVES %m','TRIUMPH! %s CELEBRATES %m',
-'%s DOMINATES THE HEAVENS WITH %m','HISTORIC: %s COMPLETES %m'];
+const MM={'first_FirstFlight':'Primer Lanzamiento','KarmanLine':'Linea de Karman','BreakSoundBarrier':'Barrera del Sonido (Tripulado)',
+'FirstSatellite':'Primer Satelite','FirstSolarSat':'Primer Satelite Solar','FirstPolarSat':'Primer Satelite Polar',
+'FirstScienceSat':'Primer Satelite Cientifico','AtmoSat':'Satelite de Analisis Atmosferico',
+'EOSIRRad1':'Satelite de Radiometria IR','EOSIRRad2':'Radiometria IR (Siguiente)',
+'EOSCosmicRay1':'Satelite Rayos Cosmicos (HEO)','EOSGrav1':'Satelite Gravimetrico',
+'FirstNavSat-SCA':'Primer Satelite de Navegacion','EarlyNavNetwork3-SCA':'Red de Navegacion',
+'XPlanesSupersonicMach2':'X-Planes: Mach 2','XPlanesStratosphericResearch':'X-Planes: Estratosferico',
+'XPlanesHypersonic':'X-Planes: Hipersonico','XPlanesHighAltitude':'X-Planes: Gran Altitud',
+'XPlanesKarman':'X-Planes: Linea de Karman','first_OrbitRecover':'Velocidad Orbital y Retorno',
+'CrewedSuborbital':'Suborbital Tripulado','first_OrbitCrewed':'Orbital Tripulado',
+'first_EVACrew':'Primera EVA','first_Rendezvous':'Primer Rendezvous','first_Docking':'Primer Acoplamiento',
+'LunarImpactor':'Impacto Lunar','LunarFlyby':'Sobrevuelo Lunar','LunarOrbiter':'Orbitador Lunar',
+'first_MoonLanding':'Aterrizaje Lunar (No Tripulado)','first_MoonLandingCrew':'Aterrizaje Lunar Tripulado'};
+const MO=['Primer Lanzamiento','Linea de Karman','Barrera del Sonido (Tripulado)','Primer Satelite','Primer Satelite Solar',
+'Primer Satelite Polar','Primer Satelite Cientifico','Satelite de Analisis Atmosferico',
+'X-Planes: Mach 2','X-Planes: Estratosferico','X-Planes: Hipersonico','X-Planes: Gran Altitud','X-Planes: Linea de Karman',
+'Satelite de Radiometria IR','Radiometria IR (Siguiente)','Satelite Rayos Cosmicos (HEO)','Satelite Gravimetrico',
+'Primer Satelite de Navegacion','Red de Navegacion','Velocidad Orbital y Retorno','Suborbital Tripulado','Orbital Tripulado',
+'Primera EVA','Primer Rendezvous','Primer Acoplamiento','Impacto Lunar','Sobrevuelo Lunar','Aterrizaje Lunar (No Tripulado)',
+'Orbitador Lunar','Aterrizaje Lunar Tripulado'];
+const TIERS={'Fundacion':[0,2],'Espacio Temprano':[3,7],'X-Planes':[8,12],'Observacion Terrestre':[13,16],
+'Navegacion':[17,18],'Tripulado':[19,24],'Lunar':[25,29]};
+const HIST={'Primer Lanzamiento':'1957-10-04','Primer Satelite':'1957-10-04','Barrera del Sonido (Tripulado)':'1947-10-14',
+'Primer Satelite Solar':'1958-03-17','Orbital Tripulado':'1961-04-12','Impacto Lunar':'1959-09-14',
+'Aterrizaje Lunar Tripulado':'1969-07-20','Primera EVA':'1965-03-18','X-Planes: Mach 2':'1953-11-20'};
+const HL=['%s SORPRENDE AL MUNDO: %m!','ULTIMA HORA: %s LOGRA %m','TRIUNFO! %s CELEBRA %m',
+'%s DOMINA LOS CIELOS CON %m','HISTORICO: %s COMPLETA %m'];
 
 let S={p1:null,p2:null,news:[]};
 function d2s(ts){return new Date(EPOCH.getTime()+ts*1000).toISOString().split('T')[0]}
@@ -172,7 +172,7 @@ return R}
 async function imp(n){
 const name=document.getElementById('n'+n+'i').value.trim()||('Player '+n);
 const fi=document.getElementById('f'+n),si=document.getElementById('s'+n);
-if(!fi.files.length){si.textContent='No file selected';return}
+if(!fi.files.length){si.textContent='Ningun archivo seleccionado';return}
 const reader=new FileReader();
 reader.onload=async function(e){
 const data=parse(e.target.result);
@@ -191,11 +191,11 @@ const first=!other||!other.milestones[ms]||ts<=other.milestones[ms];
 S.news.unshift({date:d2s(ts),headline:HL[Math.floor(Math.random()*HL.length)].replace('%s',name.toUpperCase()).replace('%m',ms.toUpperCase()),player:n,milestone:ms,first})}
 S.news.sort((a,b)=>b.date>a.date?1:-1);
 await save();render();
-si.textContent='OK! '+Object.keys(S['p'+n].milestones).length+' milestones, '+data.rep.toFixed(0)+' rep'};
+si.textContent='OK! '+Object.keys(S['p'+n].milestones).length+' hitos, '+data.rep.toFixed(0)+' rep'};
 reader.readAsText(fi.files[0])}
 
 async function sync(){const r=await fetch(DB+'/race.json');const d=await r.json();if(d){S=d;render();
-document.getElementById('ss').textContent='Refreshed!'}else document.getElementById('ss').textContent='No cloud data'}
+document.getElementById('ss').textContent='Actualizado!'}else document.getElementById('ss').textContent='Sin datos en la nube'}
 
 function render(){
 if(S.p1){document.getElementById('n1').textContent=S.p1.name;document.getElementById('r1').textContent=Math.floor(S.p1.rep)+' REP';
@@ -205,26 +205,26 @@ document.getElementById('i2').textContent=d2s(S.p2.gameDate)+' | $'+Math.floor(S
 renderStats();renderTL();renderNews()}
 
 function renderStats(){
-const el=document.getElementById('statsEl');if(!S.p1&&!S.p2){el.innerHTML='<div class="card"><p style="color:#484f58">Import saves to begin</p></div>';return}
+const el=document.getElementById('statsEl');if(!S.p1&&!S.p2){el.innerHTML='<div class="card"><p style="color:#484f58">Importa las partidas para empezar</p></div>';return}
 const n1=S.p1?S.p1.name:'--',n2=S.p2?S.p2.name:'--';
 const m1=S.p1?Object.keys(S.p1.milestones).length:0,m2=S.p2?Object.keys(S.p2.milestones).length:0;
 let w1=0,w2=0;if(S.p1&&S.p2)for(const m of MO){const t1=S.p1.milestones[m],t2=S.p2.milestones[m];
 if(t1&&t2){if(t1<t2)w1++;else if(t2<t1)w2++}else if(t1)w1++;else if(t2)w2++}
 const tot=w1+w2||1;
 const v=(p,fn)=>p?fn(p):'--';
-let h=`<div class="card"><h3>Overview</h3><table class="data">
+let h=`<div class="card"><h3>Resumen</h3><table class="data">
 <tr><th></th><th class="p1">${n1}</th><th class="p2">${n2}</th></tr>
-<tr><td>Reputation</td><td class="p1">${v(S.p1,p=>Math.floor(p.rep))}</td><td class="p2">${v(S.p2,p=>Math.floor(p.rep))}</td></tr>
-<tr><td>Funds</td><td class="p1">${v(S.p1,p=>'$'+Math.floor(p.funds).toLocaleString())}</td><td class="p2">${v(S.p2,p=>'$'+Math.floor(p.funds).toLocaleString())}</td></tr>
-<tr><td>Milestones</td><td class="p1">${m1}/${MO.length}</td><td class="p2">${m2}/${MO.length}</td></tr>
-<tr><td>Firsts Won</td><td class="p1">${w1}</td><td class="p2">${w2}</td></tr>
-<tr><td>Contracts</td><td class="p1">${v(S.p1,p=>p.contractsCompleted)}</td><td class="p2">${v(S.p2,p=>p.contractsCompleted)}</td></tr>
-<tr><td>Success Rate</td><td class="p1">${v(S.p1,p=>p.contractsCompleted?(p.contractsCompleted/(p.contractsCompleted+p.contractsFailed)*100).toFixed(0)+'%':'--')}</td><td class="p2">${v(S.p2,p=>p.contractsCompleted?(p.contractsCompleted/(p.contractsCompleted+p.contractsFailed)*100).toFixed(0)+'%':'--')}</td></tr>
-<tr><td>In-Game Date</td><td class="p1">${v(S.p1,p=>d2s(p.gameDate))}</td><td class="p2">${v(S.p2,p=>d2s(p.gameDate))}</td></tr>
+<tr><td>Reputacion</td><td class="p1">${v(S.p1,p=>Math.floor(p.rep))}</td><td class="p2">${v(S.p2,p=>Math.floor(p.rep))}</td></tr>
+<tr><td>Fondos</td><td class="p1">${v(S.p1,p=>'$'+Math.floor(p.funds).toLocaleString())}</td><td class="p2">${v(S.p2,p=>'$'+Math.floor(p.funds).toLocaleString())}</td></tr>
+<tr><td>Hitos</td><td class="p1">${m1}/${MO.length}</td><td class="p2">${m2}/${MO.length}</td></tr>
+<tr><td>Primeros</td><td class="p1">${w1}</td><td class="p2">${w2}</td></tr>
+<tr><td>Contratos</td><td class="p1">${v(S.p1,p=>p.contractsCompleted)}</td><td class="p2">${v(S.p2,p=>p.contractsCompleted)}</td></tr>
+<tr><td>Tasa de Exito</td><td class="p1">${v(S.p1,p=>p.contractsCompleted?(p.contractsCompleted/(p.contractsCompleted+p.contractsFailed)*100).toFixed(0)+'%':'--')}</td><td class="p2">${v(S.p2,p=>p.contractsCompleted?(p.contractsCompleted/(p.contractsCompleted+p.contractsFailed)*100).toFixed(0)+'%':'--')}</td></tr>
+<tr><td>Fecha en Juego</td><td class="p1">${v(S.p1,p=>d2s(p.gameDate))}</td><td class="p2">${v(S.p2,p=>d2s(p.gameDate))}</td></tr>
 </table>
 <div style="margin-top:12px"><div class="bar"><div style="width:${w1/tot*100}%;background:#58a6ff">${w1}</div><div style="width:${w2/tot*100}%;background:#f85149">${w2}</div></div></div>
 </div>`;
-h+=`<div class="card"><h3>By Category</h3><table class="data">
+h+=`<div class="card"><h3>Por Categoria</h3><table class="data">
 <tr><th></th><th class="p1">${n1}</th><th class="p2">${n2}</th></tr>`;
 for(const[tier,[s,e]]of Object.entries(TIERS)){const sl=MO.slice(s,e+1);
 const c1=sl.filter(m=>S.p1&&S.p1.milestones[m]).length,c2=sl.filter(m=>S.p2&&S.p2.milestones[m]).length;
@@ -245,9 +245,9 @@ h+=`<div class="tl-item"><div class="tl-p1">${t1?`<span class="tl-date${f1?' tl-
 el.innerHTML=h}
 
 function renderNews(){
-const el=document.getElementById('newsEl');if(!S.news||!S.news.length){el.innerHTML='<p style="color:#484f58">No news yet</p>';return}
+const el=document.getElementById('newsEl');if(!S.news||!S.news.length){el.innerHTML='<p style="color:#484f58">Sin noticias aun</p>';return}
 let h='';for(const n of S.news.slice(0,30)){const c=n.player===1?'p1':'p2';
-h+=`<div class="news-item"><span class="date">${n.date}</span>${n.first?' <span class="tag">FIRST</span>':''}<div class="${c}">${n.headline}</div></div>`}
+h+=`<div class="news-item"><span class="date">${n.date}</span>${n.first?' <span class="tag">PRIMERO</span>':''}<div class="${c}">${n.headline}</div></div>`}
 el.innerHTML=h}
 
 load().then(render);
