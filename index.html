@@ -250,7 +250,7 @@ let h='';for(const n of S.news.slice(0,30)){const c=n.player===1?'p1':'p2';
 h+=`<div class="news-item"><span class="date">${n.date}</span>${n.first?' <span class="tag">PRIMERO</span>':''}<div class="${c}">${n.headline}</div></div>`}
 el.innerHTML=h}
 
-load().then(render);
+load().then(()=>{render();console.log('Loaded from cloud, firsts:',S.p1?Object.keys(S.p1.milestones).length:'none',S.p2?Object.keys(S.p2.milestones).length:'none')}).catch(e=>console.error('Load failed',e));
 </script>
 </body>
 </html>
