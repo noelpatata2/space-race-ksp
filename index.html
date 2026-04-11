@@ -3,128 +3,501 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CARRERA ESPACIAL</title>
+<title>The Kerbin Times</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Special+Elite&display=swap');
+
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',sans-serif;background:#0d1117;color:#c9d1d9;min-height:100vh;padding:20px}
-.container{max-width:900px;margin:0 auto}
-h1{text-align:center;font-size:1.8em;color:#e6edf3;letter-spacing:6px;margin-bottom:4px}
-.sub{text-align:center;color:#484f58;font-size:0.8em;margin-bottom:24px}
 
-.score{display:flex;justify-content:space-between;align-items:center;padding:24px;
-background:#161b22;border:1px solid #21262d;border-radius:12px;margin-bottom:20px}
-.player{text-align:center;flex:1}
-.player .name{font-size:1em;font-weight:700;letter-spacing:2px;margin-bottom:4px}
-.player .rep{font-size:2.2em;font-weight:900}
-.player .info{font-size:0.75em;color:#484f58;margin-top:4px}
-.vs{color:#30363d;font-size:1.5em;font-weight:900;padding:0 20px}
-.p1{color:#58a6ff}.p2{color:#f85149}
+body{
+    font-family:'Libre Baskerville','Georgia','Times New Roman',serif;
+    background:#c4a86b;
+    color:#2a2218;
+    min-height:100vh;
+    padding:20px;
+    font-size:14px;
+    line-height:1.5;
+}
 
-.tabs{display:flex;gap:4px;margin-bottom:20px}
-.tab{padding:8px 18px;background:#161b22;border:1px solid #21262d;border-radius:8px;
-cursor:pointer;color:#484f58;font-size:0.85em;transition:all 0.2s}
-.tab.active{color:#e6edf3;border-color:#e6edf3;background:#21262d;font-weight:600}
-.tab:hover{background:#1c2028}
+.newspaper{
+    max-width:960px;
+    margin:0 auto;
+    background:#d4b87a;
+    background-image:
+        radial-gradient(ellipse at 30% 20%,rgba(220,195,140,0.6) 0%,transparent 50%),
+        radial-gradient(ellipse at 70% 70%,rgba(200,175,120,0.4) 0%,transparent 50%);
+    padding:20px 32px 40px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.3);
+    position:relative;
+}
+.newspaper::before{
+    content:'';position:absolute;top:0;left:0;right:0;bottom:0;
+    background:repeating-linear-gradient(0deg,transparent,transparent 1px,rgba(0,0,0,0.008) 1px,rgba(0,0,0,0.008) 2px);
+    pointer-events:none;
+}
+
+/* ===== MASTHEAD ===== */
+.masthead{
+    text-align:center;
+    border-bottom:2px solid #2a2218;
+    padding-bottom:6px;
+    margin-bottom:0;
+    position:relative;
+}
+.masthead-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom:2px;
+}
+.masthead-motto{
+    border:1.5px solid #2a2218;
+    padding:4px 8px;
+    font-size:0.55em;
+    font-style:italic;
+    line-height:1.3;
+    max-width:100px;
+    text-align:center;
+    margin-top:4px;
+}
+.masthead-edition{
+    font-size:0.6em;
+    text-align:right;
+    line-height:1.4;
+    max-width:140px;
+    margin-top:4px;
+}
+.masthead-title{
+    font-family:'UnifrakturMaguntia','Georgia',serif;
+    font-size:3.5em;
+    letter-spacing:2px;
+    line-height:1;
+    color:#2a2218;
+    margin:0;
+    font-weight:400;
+}
+.masthead-dateline{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:0.65em;
+    padding:4px 0;
+    border-top:1px solid #2a2218;
+    margin-top:4px;
+    color:#3a3020;
+}
+.masthead-dateline .price{font-style:italic;}
+
+/* ===== MAIN HEADLINE ===== */
+.main-headline{
+    text-align:center;
+    padding:16px 0 10px;
+    border-bottom:1px solid #2a2218;
+}
+.main-headline h2{
+    font-family:'Playfair Display',serif;
+    font-size:3em;
+    font-weight:900;
+    line-height:1.05;
+    letter-spacing:1px;
+    color:#2a2218;
+    margin-bottom:6px;
+}
+.main-headline .sub-headline{
+    font-family:'Playfair Display',serif;
+    font-size:1.4em;
+    font-weight:700;
+    line-height:1.2;
+    color:#2a2218;
+    margin-bottom:4px;
+}
+.main-headline .sub-headline-2{
+    font-size:0.85em;
+    font-style:italic;
+    color:#4a3a28;
+}
+
+/* ===== SCORE / SCOREBOARD ===== */
+.score-strip{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:0;
+    padding:12px 0;
+    border-bottom:2px solid #2a2218;
+}
+.score-player{
+    flex:1;
+    text-align:center;
+    padding:8px 12px;
+}
+.score-player .name{
+    font-family:'Playfair Display',serif;
+    font-size:1.1em;
+    font-weight:900;
+    text-transform:uppercase;
+    letter-spacing:2px;
+}
+.score-player .rep{
+    font-family:'Playfair Display',serif;
+    font-size:2.8em;
+    font-weight:900;
+    line-height:1.1;
+}
+.score-player .info{
+    font-size:0.7em;
+    color:#5a4a38;
+    font-style:italic;
+    margin-top:2px;
+}
+.score-vs{
+    font-family:'Playfair Display',serif;
+    font-size:1em;
+    font-weight:400;
+    color:#5a4a38;
+    padding:0 8px;
+    border-left:1px solid #2a2218;
+    border-right:1px solid #2a2218;
+    letter-spacing:2px;
+}
+.p1{color:#1a2a44}
+.p2{color:#8b0000}
+
+/* ===== NAVIGATION TABS ===== */
+.nav-tabs{
+    display:flex;
+    border-bottom:1px solid #2a2218;
+    background:transparent;
+}
+.tab{
+    flex:1;
+    padding:6px 10px;
+    text-align:center;
+    font-family:'Playfair Display',serif;
+    font-size:0.7em;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:2px;
+    color:#5a4a38;
+    cursor:pointer;
+    border:none;
+    border-right:1px solid #b0996a;
+    background:transparent;
+    transition:background 0.15s;
+}
+.tab:last-child{border-right:none}
+.tab.active{color:#2a2218;background:rgba(0,0,0,0.07)}
+.tab:hover{background:rgba(0,0,0,0.04)}
 .panel{display:none}.panel.active{display:block}
 
-.stats{display:grid;grid-template-columns:1fr;gap:14px;margin-bottom:20px}
-.stats.two-col{grid-template-columns:1fr 1fr}
+/* ===== COLUMNS LAYOUT ===== */
+.columns{
+    display:grid;
+    grid-template-columns:1fr 1px 1fr;
+    gap:0;
+    margin-top:12px;
+}
+.columns .col{padding:0 16px}
+.columns .col:first-child{padding-left:0}
+.columns .col:last-child{padding-right:0}
+.columns .divider{background:#2a2218;width:1px}
+
+.three-columns{
+    display:grid;
+    grid-template-columns:1fr 1px 1fr 1px 1fr;
+    gap:0;
+    margin-top:12px;
+}
+.three-columns .col{padding:0 14px}
+.three-columns .col:first-child{padding-left:0}
+.three-columns .col:last-child{padding-right:0}
+.three-columns .divider{background:#2a2218;width:1px}
+
+/* ===== STATS / SUMMARY ===== */
+.stats{display:block;margin-bottom:0}
+.stats.two-col{display:block}
+
+.card{
+    background:transparent;
+    border:none;
+    padding:0;
+    margin-bottom:16px;
+}
+.card h3{
+    font-family:'Playfair Display',serif;
+    font-size:0.9em;
+    font-weight:900;
+    text-transform:uppercase;
+    letter-spacing:2px;
+    color:#2a2218;
+    border-bottom:2px solid #2a2218;
+    padding-bottom:4px;
+    margin-bottom:8px;
+}
+
 table.data{width:100%;border-collapse:collapse;font-size:0.85em}
-table.data th{text-align:right;color:#484f58;font-size:0.75em;font-weight:600;padding:6px 0;border-bottom:1px solid #21262d}
+table.data th{
+    text-align:right;color:#4a3a28;font-size:0.7em;font-weight:700;
+    padding:4px 0;border-bottom:1.5px solid #2a2218;text-transform:uppercase;letter-spacing:1px;
+}
 table.data th:first-child{text-align:left}
-table.data td{padding:6px 0;border-bottom:1px solid #161b22}
-table.data td:first-child{color:#8b949e;text-align:left}
-table.data td:nth-child(2){text-align:right;min-width:80px}
-table.data td:nth-child(3){text-align:right;min-width:80px}
-.card{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:18px}
-.card h3{font-size:0.7em;text-transform:uppercase;color:#484f58;letter-spacing:1px;margin-bottom:12px}
+table.data td{padding:5px 0;border-bottom:1px solid #b0996a}
+table.data td:first-child{color:#3a3020;text-align:left;font-style:italic}
+table.data td:nth-child(2){text-align:right;min-width:70px;font-weight:700}
+table.data td:nth-child(3){text-align:right;min-width:70px;font-weight:700}
+
 .row{display:grid;grid-template-columns:1fr auto auto;gap:8px;padding:4px 0;font-size:0.85em}
-.row .l{color:#8b949e;text-align:left}
-.row .p1,.row .p2{text-align:right;min-width:70px}
-.bar{display:flex;height:18px;border-radius:9px;overflow:hidden;background:#21262d;margin:6px 0}
-.bar div{display:flex;align-items:center;justify-content:center;font-size:0.6em;font-weight:700;color:#fff}
+.row .l{color:#3a3020;text-align:left}
+.row .p1,.row .p2{text-align:right;min-width:70px;font-weight:700}
 
-.tl-item{display:flex;align-items:center;padding:7px 0;border-bottom:1px solid #161b22;font-size:0.85em}
-.tl-p1{flex:1;text-align:right;padding-right:14px;min-width:0}
-.tl-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;border:2px solid #21262d}
-.tl-dot.w1{background:#58a6ff;border-color:#58a6ff}.tl-dot.w2{background:#f85149;border-color:#f85149}
-.tl-dot.tie{background:#d29922;border-color:#d29922}.tl-dot.none{background:#161b22}
-.tl-p2{flex:1;padding-left:14px;min-width:0}
-.tl-name{color:#8b949e;font-size:0.85em}
-.tl-date{font-size:0.75em;color:#484f58}
-.tl-first{color:#d29922;font-weight:600}
-.tl-tier{font-size:0.65em;color:#30363d;letter-spacing:2px;text-transform:uppercase;padding:14px 0 4px;text-align:center;font-weight:600}
-.tl-hist{font-size:0.65em;color:#21262d;margin-left:4px}
+.bar{display:flex;height:16px;overflow:hidden;background:#c4a86b;margin:6px 0;border:1px solid #2a2218}
+.bar div{display:flex;align-items:center;justify-content:center;font-size:0.55em;font-weight:700;color:#fff}
 
-.news-item{padding:10px 0;border-bottom:1px solid #21262d;font-size:0.85em}
-.news-item .date{color:#30363d;font-size:0.8em}
-.news-item .tag{color:#d29922;font-weight:700;font-size:0.7em}
+/* ===== TIMELINE ===== */
+.tl-item{display:flex;align-items:center;padding:5px 0;border-bottom:1px solid #b0996a;font-size:0.82em}
+.tl-p1{flex:1;text-align:right;padding-right:10px;min-width:0}
+.tl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.tl-dot.w1{background:#1a2a44}
+.tl-dot.w2{background:#8b0000}
+.tl-dot.tie{background:#8b6914}
+.tl-dot.none{background:#b0996a}
+.tl-p2{flex:1;padding-left:10px;min-width:0}
+.tl-name{color:#2a2218;font-size:0.85em}
+.tl-date{font-size:0.72em;color:#5a4a38;font-style:italic}
+.tl-first{color:#8b0000;font-weight:700}
+.tl-tier{
+    font-family:'Playfair Display',serif;font-size:0.65em;color:#2a2218;
+    letter-spacing:3px;text-transform:uppercase;padding:12px 0 4px;text-align:center;
+    font-weight:900;border-bottom:1.5px solid #2a2218;border-top:1px solid #b0996a;margin-top:6px;
+}
+.tl-hist{font-size:0.6em;color:#7a6a50;margin-left:3px;font-style:italic}
 
-.import-box{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:18px;margin-bottom:12px}
-.import-box h3{font-size:0.7em;text-transform:uppercase;color:#484f58;letter-spacing:1px;margin-bottom:8px}
+/* ===== NEWS / ARTICLES ===== */
+.news-article{
+    padding:12px 0;
+    border-bottom:1px solid #b0996a;
+}
+.news-article:first-child{padding-top:0}
+.news-article .news-headline{
+    font-family:'Playfair Display',serif;
+    font-size:1.05em;
+    font-weight:700;
+    line-height:1.25;
+    color:#2a2218;
+    margin-bottom:3px;
+}
+.news-article .news-headline.first-headline{
+    font-size:1.3em;
+    font-weight:900;
+}
+.news-article .news-headline.news-p1{
+    color:#1a2a44;
+}
+.news-article .news-headline.news-p2{
+    color:#8b0000;
+}
+.news-article .news-byline{
+    font-size:0.68em;
+    color:#5a4a38;
+    font-style:italic;
+    margin-bottom:4px;
+    letter-spacing:0.5px;
+}
+.news-article .news-body{
+    font-size:0.82em;
+    line-height:1.6;
+    color:#3a3020;
+    text-align:justify;
+}
+.news-article .news-tag{
+    display:inline-block;
+    font-size:0.6em;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:2px;
+    color:#8b0000;
+    border:1px solid #8b0000;
+    padding:1px 5px;
+    margin-left:4px;
+    vertical-align:middle;
+}
+
+/* old classes kept for JS compat */
+.news-item{
+    padding:10px 0;
+    border-bottom:1px solid #b0996a;
+}
+.news-item .date{
+    font-size:0.7em;color:#5a4a38;font-style:italic;
+}
+.news-item .tag{
+    font-size:0.6em;font-weight:700;text-transform:uppercase;letter-spacing:2px;
+    color:#8b0000;border:1px solid #8b0000;padding:1px 5px;margin-left:4px;
+}
+.news-item .p1,.news-item .p2{
+    font-family:'Playfair Display',serif;
+    font-weight:700;line-height:1.3;margin-top:3px;
+    font-size:1em;
+}
+
+/* ===== IMPORT / CLASSIFIED ===== */
+.import-box{
+    background:rgba(0,0,0,0.03);
+    border:1px solid #2a2218;
+    padding:14px 16px;
+    margin-bottom:10px;
+    position:relative;
+}
+.import-box h3{
+    font-family:'Special Elite','Courier New',monospace;
+    font-size:0.75em;text-transform:uppercase;letter-spacing:3px;
+    color:#2a2218;margin-bottom:8px;
+}
 .import-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.import-row input[type=text]{background:#0d1117;border:1px solid #21262d;color:#c9d1d9;padding:6px 10px;border-radius:6px;font-size:0.85em;width:150px}
-.import-row input[type=file]{font-size:0.8em;color:#484f58}
-.btn{padding:6px 16px;border:1px solid #e6edf3;background:#21262d;color:#e6edf3;border-radius:6px;cursor:pointer;font-size:0.82em}
-.btn:hover{background:#30363d}
-.btn-red{border-color:#f85149;background:#f8514920;color:#f85149}
-.btn-red:hover{background:#f8514940}
-.status{font-size:0.75em;color:#484f58;margin-top:6px}
+.import-row input[type=text]{
+    background:#d4b87a;border:1px solid #2a2218;color:#2a2218;
+    padding:5px 10px;font-size:0.82em;width:140px;
+    font-family:'Special Elite','Courier New',monospace;
+}
+.import-row input[type=text]::placeholder{color:#7a6a50}
+.import-row input[type=file]{font-size:0.75em;color:#5a4a38;font-family:'Special Elite',monospace}
+.btn{
+    padding:5px 14px;border:1px solid #2a2218;background:#d4b87a;color:#2a2218;
+    cursor:pointer;font-size:0.75em;font-family:'Special Elite','Courier New',monospace;
+    text-transform:uppercase;letter-spacing:1px;transition:all 0.15s;
+}
+.btn:hover{background:#2a2218;color:#d4b87a}
+.btn-red{border-color:#8b0000;color:#8b0000}
+.btn-red:hover{background:#8b0000;color:#d4b87a}
+.status{font-size:0.7em;color:#5a4a38;margin-top:6px;font-style:italic;font-family:'Special Elite',monospace}
 
-@media(max-width:600px){
-body{padding:10px}
-h1{font-size:1.3em;letter-spacing:3px}
-.score{flex-direction:column;gap:8px;padding:16px}
-.vs{padding:4px 0;font-size:1.2em}
-.player .rep{font-size:1.6em}
-.tabs{flex-wrap:wrap}
-.tab{flex:1;text-align:center;padding:8px 10px;font-size:0.78em;min-width:0}
-table.data td:nth-child(2),table.data td:nth-child(3),table.data th:nth-child(2),table.data th:nth-child(3){min-width:60px;font-size:0.8em}
-.tl-item{font-size:0.78em}
-.tl-p1{padding-right:8px}
-.tl-p2{padding-left:8px}
-.tl-name{font-size:0.75em}
-.import-row{flex-direction:column;align-items:stretch}
-.import-row input[type=text]{width:100%}
-.btn{width:100%;text-align:center}
+/* ===== FOOTER ===== */
+.paper-footer{
+    text-align:center;
+    border-top:2px solid #2a2218;
+    margin-top:20px;
+    padding-top:6px;
+    font-size:0.6em;
+    color:#7a6a50;
+    font-style:italic;
+    letter-spacing:1px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:700px){
+    body{padding:8px}
+    .newspaper{padding:12px 14px 24px}
+    .masthead-title{font-size:2.2em}
+    .masthead-top{flex-direction:column;align-items:center;gap:4px}
+    .masthead-motto,.masthead-edition{max-width:none;text-align:center}
+    .main-headline h2{font-size:1.8em}
+    .main-headline .sub-headline{font-size:1em}
+    .score-strip{flex-direction:column;gap:4px}
+    .score-vs{border:none;border-top:1px solid #2a2218;border-bottom:1px solid #2a2218;padding:4px 0}
+    .score-player .rep{font-size:2em}
+    .columns,.three-columns{grid-template-columns:1fr}
+    .columns .divider,.three-columns .divider{display:none;height:1px;width:100%;background:#2a2218}
+    .columns .col,.three-columns .col{padding:0;border-bottom:1px solid #b0996a;padding-bottom:12px;margin-bottom:12px}
+    .nav-tabs{flex-wrap:wrap}
+    .tab{font-size:0.6em;letter-spacing:1px;padding:6px 6px}
+    table.data td:nth-child(2),table.data td:nth-child(3),
+    table.data th:nth-child(2),table.data th:nth-child(3){min-width:55px;font-size:0.78em}
+    .import-row{flex-direction:column;align-items:stretch}
+    .import-row input[type=text]{width:100%}
+    .btn{width:100%;text-align:center}
 }
 </style>
 </head>
 <body>
-<div class="container">
-    <h1>CARRERA ESPACIAL</h1>
-    <p class="sub">KSP RP-1 - Comparador de Carreras</p>
+<div class="newspaper">
 
-    <div class="score">
-        <div class="player"><div class="name p1" id="n1">--</div><div class="rep p1" id="r1">--</div><div class="info" id="i1"></div></div>
-        <div class="vs">VS</div>
-        <div class="player"><div class="name p2" id="n2">--</div><div class="rep p2" id="r2">--</div><div class="info" id="i2"></div></div>
+    <!-- MASTHEAD -->
+    <header class="masthead">
+        <div class="masthead-top">
+            <div class="masthead-motto">"All the News That's Fit to Launch"</div>
+            <div class="masthead-title">The Kerbin Times</div>
+            <div class="masthead-edition">LATE ORBITAL EDITION<br><span style="font-size:0.85em">Cielos despejados en KSC.<br>Ventana de lanzamiento abierta.</span></div>
+        </div>
+        <div class="masthead-dateline">
+            <span>VOL. CXVIII... No. 40,721</span>
+            <span id="datelineCenter"></span>
+            <span class="price">10 Funds</span>
+        </div>
+    </header>
+
+    <!-- MAIN HEADLINE -->
+    <div class="main-headline">
+        <h2>LA CARRERA ESPACIAL<br>CONTINUA</h2>
+        <div class="sub-headline" id="subHeadline">DOS PROGRAMAS COMPITEN POR LA GLORIA</div>
+        <div class="sub-headline-2" id="subHeadline2">KSP RP-1 &mdash; Comparador de Carreras Espaciales</div>
     </div>
 
-    <div class="tabs">
+    <!-- SCORE STRIP -->
+    <div class="score-strip">
+        <div class="score-player">
+            <div class="name p1" id="n1">--</div>
+            <div class="rep p1" id="r1">--</div>
+            <div class="info" id="i1"></div>
+        </div>
+        <div class="score-vs">VS</div>
+        <div class="score-player">
+            <div class="name p2" id="n2">--</div>
+            <div class="rep p2" id="r2">--</div>
+            <div class="info" id="i2"></div>
+        </div>
+    </div>
+
+    <!-- NAVIGATION -->
+    <div class="nav-tabs">
         <div class="tab active" onclick="tab('dash')">Resumen</div>
         <div class="tab" onclick="tab('tl')">Hitos</div>
         <div class="tab" onclick="tab('news')">Noticias</div>
-        <div class="tab" onclick="tab('imp')">Importar</div>
+        <div class="tab" onclick="tab('imp')">Archivo</div>
     </div>
 
-    <div class="panel active" id="p-dash"><div class="stats" id="statsEl"></div></div>
-    <div class="panel" id="p-tl"><div id="tlEl"></div></div>
-    <div class="panel" id="p-news"><div id="newsEl"></div></div>
-    <div class="panel" id="p-imp">
-        <div class="import-box"><h3>Jugador 1</h3>
-            <div class="import-row"><input type="text" id="n1i" placeholder="Nombre"><input type="file" id="f1" accept=".sfs"><button class="btn" onclick="imp(1)">IMPORTAR</button></div>
-            <div class="status" id="s1"></div></div>
-        <div class="import-box"><h3>Jugador 2</h3>
-            <div class="import-row"><input type="text" id="n2i" placeholder="Nombre"><input type="file" id="f2" accept=".sfs"><button class="btn" onclick="imp(2)">IMPORTAR</button></div>
-            <div class="status" id="s2"></div></div>
-        <div class="import-box"><h3>Datos</h3>
-            <div class="import-row">
-                <button class="btn" onclick="sync()">ACTUALIZAR DESDE LA NUBE</button>
-                <button class="btn btn-red" onclick="if(confirm('Borrar todos los datos?')){fetch(DB+'/race.json',{method:'DELETE'}).then(()=>location.reload())}">RESETEAR</button>
-            </div><div class="status" id="ss"></div></div>
+    <!-- PANEL: DASHBOARD -->
+    <div class="panel active" id="p-dash">
+        <div class="stats" id="statsEl"></div>
     </div>
+
+    <!-- PANEL: TIMELINE -->
+    <div class="panel" id="p-tl"><div id="tlEl"></div></div>
+
+    <!-- PANEL: NEWS -->
+    <div class="panel" id="p-news"><div id="newsEl"></div></div>
+
+    <!-- PANEL: IMPORT -->
+    <div class="panel" id="p-imp">
+        <div style="margin-top:12px">
+            <div class="import-box"><h3>Programa Espacial 1</h3>
+                <div class="import-row">
+                    <input type="text" id="n1i" placeholder="Nombre del programa">
+                    <input type="file" id="f1" accept=".sfs">
+                    <button class="btn" onclick="imp(1)">IMPORTAR</button>
+                </div>
+                <div class="status" id="s1"></div>
+            </div>
+            <div class="import-box"><h3>Programa Espacial 2</h3>
+                <div class="import-row">
+                    <input type="text" id="n2i" placeholder="Nombre del programa">
+                    <input type="file" id="f2" accept=".sfs">
+                    <button class="btn" onclick="imp(2)">IMPORTAR</button>
+                </div>
+                <div class="status" id="s2"></div>
+            </div>
+            <div class="import-box"><h3>Administracion</h3>
+                <div class="import-row">
+                    <button class="btn" onclick="sync()">ACTUALIZAR DESDE LA NUBE</button>
+                    <button class="btn btn-red" onclick="if(confirm('Borrar todos los datos?')){fetch(DB+'/race.json',{method:'DELETE'}).then(()=>location.reload())}">RESETEAR</button>
+                </div>
+                <div class="status" id="ss"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="paper-footer">The Kerbin Times &copy; Kerbin Space Center &mdash; Una publicacion del Comite Central de Exploracion Espacial</div>
 </div>
+
 <script>
 const DB='https://ksp-rp1-default-rtdb.europe-west1.firebasedatabase.app';
 const EPOCH=new Date(1951,0,1);
@@ -160,8 +533,56 @@ const TIERS={'Fundacion':[0,2],'Espacio Temprano':[3,7],'X-Planes':[8,12],'Obser
 const HIST={'Primer Lanzamiento':'1957-10-04','Primer Satelite':'1957-10-04','Barrera del Sonido (Tripulado)':'1947-10-14',
 'Primer Satelite Solar':'1958-03-17','Orbital Tripulado':'1961-04-12','Impacto Lunar':'1959-09-14',
 'Aterrizaje Lunar Tripulado':'1969-07-20','Primera EVA':'1965-03-18','X-Planes: Mach 2':'1953-11-20'};
-const HL=['%s SORPRENDE AL MUNDO: %m!','ULTIMA HORA: %s LOGRA %m','TRIUNFO! %s CELEBRA %m',
-'%s DOMINA LOS CIELOS CON %m','HISTORICO: %s COMPLETA %m'];
+
+// Unique headline templates per milestone — no repeats
+const NEWS_HEADLINES={
+'Primer Lanzamiento':['%s LANZA SU PRIMER COHETE','EL CIELO YA NO ES EL LIMITE: %s DESPEGA'],
+'Linea de Karman':['%s CRUZA LA FRONTERA DEL ESPACIO','UN COHETE DE %s ALCANZA LOS 100 KM'],
+'Barrera del Sonido (Tripulado)':['PILOTO DE %s ROMPE LA BARRERA DEL SONIDO','%s: VUELO SUPERSONICO TRIPULADO EXITOSO'],
+'Primer Satelite':['%s PONE UN SATELITE EN ORBITA','HISTORICO: PRIMER SATELITE ARTIFICIAL DE %s ORBITA LA TIERRA'],
+'Primer Satelite Solar':['SATELITE DE %s ENTRA EN ORBITA SOLAR','%s ALCANZA EL SOL: SATELITE EN ORBITA HELIOCENTRICA'],
+'Primer Satelite Polar':['SATELITE DE %s CRUZA AMBOS POLOS','%s: ORBITA POLAR LOGRADA'],
+'Primer Satelite Cientifico':['%s LANZA LABORATORIO ORBITAL','CIENCIA EN ORBITA: %s ENVIA INSTRUMENTOS AL ESPACIO'],
+'Satelite de Analisis Atmosferico':['%s ESTUDIA LA ATMOSFERA DESDE EL ESPACIO','OBSERVATORIO ATMOSFERICO DE %s EN ORBITA'],
+'X-Planes: Mach 2':['PILOTO DE %s DUPLICA LA VELOCIDAD DEL SONIDO','%s: AVION EXPERIMENTAL ALCANZA MACH 2'],
+'X-Planes: Estratosferico':['AVION DE %s PENETRA LA ESTRATOSFERA','%s CONQUISTA LAS ALTURAS ESTRATOSFERICAS'],
+'X-Planes: Hipersonico':['%s ALCANZA VELOCIDADES HIPERSONICAS','RECORD: AVION DE %s VUELA A MACH 5+'],
+'X-Planes: Gran Altitud':['%s BATE RECORD DE ALTITUD EN AVION','A LAS PUERTAS DEL ESPACIO: %s EN VUELO SUBESPACIAL'],
+'X-Planes: Linea de Karman':['AVION DE %s TOCA EL ESPACIO','%s: UN AVION CRUZA LA LINEA DE KARMAN'],
+'Satelite de Radiometria IR':['%s OBSERVA LA TIERRA EN INFRARROJO','SATELITE METEOROLOGICO DE %s ENVIA PRIMERAS IMAGENES'],
+'Radiometria IR (Siguiente)':['%s MEJORA SU RED METEOROLOGICA','SEGUNDO SATELITE IR DE %s OPERATIVO'],
+'Satelite Rayos Cosmicos (HEO)':['%s ESTUDIA RAYOS COSMICOS DESDE ORBITA ALTA','DETECTOR DE %s EXPLORA LA RADIACION COSMICA'],
+'Satelite Gravimetrico':['%s CARTOGRAFIA EL CAMPO GRAVITATORIO','MISION GRAVIMETRICA DE %s REVELA DATOS CRUCIALES'],
+'Primer Satelite de Navegacion':['%s LANZA SATELITE DE NAVEGACION','NAVEGACION POR SATELITE: %s ABRE NUEVA ERA'],
+'Red de Navegacion':['%s COMPLETA RED DE NAVEGACION GLOBAL','TRES SATELITES DE %s CUBREN EL PLANETA'],
+'Primer Satelite de Comunicaciones':['%s CONECTA CONTINENTES VIA SATELITE','COMUNICACIONES ESPACIALES: %s TRANSMITE DESDE ORBITA'],
+'Red de Comunicaciones':['%s ESTABLECE RED GLOBAL DE TELECOMUNICACIONES','EL MUNDO CONECTADO: RED COMSAT DE %s OPERATIVA'],
+'Primer Satelite Molniya':['%s LANZA SATELITE EN ORBITA MOLNIYA','ORBITA ALTAMENTE ELIPTICA: %s CUBRE ALTAS LATITUDES'],
+'Primer Satelite Heliosíncrono':['%s LOGRA ORBITA HELIOSINCRONA','SATELITE DE %s SIGUE AL SOL'],
+'Velocidad Orbital y Retorno':['%s ALCANZA VELOCIDAD ORBITAL Y REGRESA','CAPSULA DE %s SOBREVIVE LA REENTRADA'],
+'Suborbital Tripulado':['%s ENVIA A UN SER HUMANO AL ESPACIO','PRIMER ASTRONAUTA DE %s CRUZA LA FRONTERA ESPACIAL'],
+'Orbital Tripulado':['%s: ¡UN HOMBRE EN ORBITA!','HISTORICO: ASTRONAUTA DE %s COMPLETA UNA ORBITA TERRESTRE'],
+'Primera EVA':['ASTRONAUTA DE %s CAMINA EN EL ESPACIO','%s: PRIMERA ACTIVIDAD EXTRAVEHICULAR DE LA HISTORIA'],
+'Primer Rendezvous':['DOS NAVES DE %s SE ENCUENTRAN EN ORBITA','%s DEMUESTRA RENDEZVOUS ORBITAL'],
+'Primer Acoplamiento':['NAVES DE %s SE ACOPLAN EN EL ESPACIO','%s LOGRA PRIMER ACOPLAMIENTO ORBITAL'],
+'Impacto Lunar':['SONDA DE %s IMPACTA LA LUNA','%s TOCA LA LUNA: PRIMER IMPACTO LUNAR'],
+'Sobrevuelo Lunar':['SONDA DE %s SOBREVUELA LA LUNA','%s FOTOGRAFA LA CARA OCULTA DE LA LUNA'],
+'Orbitador Lunar':['%s PONE UNA SONDA EN ORBITA LUNAR','ORBITADOR DE %s CARTOGRAFIA LA SUPERFICIE LUNAR'],
+'Aterrizaje Lunar (No Tripulado)':['SONDA DE %s ATERRIZA EN LA LUNA','%s: PRIMER ATERRIZAJE SUAVE EN SUELO LUNAR'],
+'Aterrizaje Lunar Tripulado':['¡%s PISA LA LUNA!','HISTORICO: ASTRONAUTAS DE %s CAMINAN SOBRE LA LUNA']
+};
+
+// Article body snippets per milestone
+const NEWS_BODIES={
+'Primer Lanzamiento':'El cohete, que despego desde las instalaciones del programa espacial a primera hora de la manana, alcanzo una altitud nominal antes de completar su trayectoria. Los ingenieros celebraron el exito de meses de preparacion.',
+'Primer Satelite':'El satelite artificial, de fabricacion nacional, emite una senal de radio constante que puede captarse desde estaciones de seguimiento en todo el globo. Los cientificos confirmaron que la orbita es estable.',
+'Orbital Tripulado':'El astronauta, tras completar una orbita completa alrededor de la Tierra en poco menos de 90 minutos, informo que la vista era "extraordinaria". La capsula aterrizo dentro de la zona prevista.',
+'Primera EVA':'Conectado a la nave por un cable umbilical, el astronauta paso varios minutos flotando en el vacio del espacio. "La Tierra es azul", reporto por radio a control de mision.',
+'Aterrizaje Lunar Tripulado':'La nave de descenso toco suelo lunar tras un descenso manual que agoto casi todo el combustible. Los astronautas desplegaron instrumentos cientificos y recogieron muestras del suelo antes de su regreso.',
+'Impacto Lunar':'La sonda, lanzada hace varios dias, impacto la superficie selenita a alta velocidad, confirmando la capacidad del programa para alcanzar cuerpos celestes mas alla de la orbita terrestre.',
+'Suborbital Tripulado':'El piloto experimento varios minutos de ingravidez antes de que la capsula iniciara su descenso. Fuentes medicas confirman que se encuentra en perfecto estado de salud.',
+};
+const NEWS_BODY_DEFAULT='Fuentes del programa espacial confirmaron el logro en un comunicado oficial. Los detalles tecnicos seran publicados en una edicion posterior. Expertos internacionales siguen de cerca los avances de ambos programas.';
 
 let S={p1:null,p2:null,news:[]};
 function d2s(ts){return new Date(EPOCH.getTime()+ts*1000).toISOString().split('T')[0]}
@@ -203,17 +624,28 @@ reader.onload=async function(e){
 const data=parse(e.target.result);
 S['p'+n]={name,rep:data.rep,funds:data.funds,gameDate:data.gameDate,milestones:data.milestones,
 contractsCompleted:data.done,contractsFailed:data.fail,importTime:new Date().toISOString()};
-// Sync both to earlier date
 if(S.p1&&S.p2){const cut=Math.min(S.p1.gameDate,S.p2.gameDate);
-S.p1.milestones=Object.fromEntries(Object.entries(S.p1.milestones).filter(([,v])=>v<=cut));
-S.p2.milestones=Object.fromEntries(Object.entries(S.p2.milestones).filter(([,v])=>v<=cut));
-S.p1.gameDate=cut;S.p2.gameDate=cut}
-// News
+// Adjust rep/funds proportionally for the player being cut back
+[S.p1,S.p2].forEach(p=>{
+    if(p.gameDate>cut){
+        const origMs=Object.keys(p.milestones).length;
+        const cutMs=Object.entries(p.milestones).filter(([,v])=>v<=cut).length;
+        const ratio=origMs>0?cutMs/origMs:1;
+        p.rep=Math.round(p.rep*ratio);
+        p.funds=Math.round(p.funds*ratio);
+    }
+    p.milestones=Object.fromEntries(Object.entries(p.milestones).filter(([,v])=>v<=cut));
+    p.gameDate=cut;
+})}
+// Generate unique news per milestone
 for(const[ms,ts]of Object.entries(S['p'+n].milestones)){
 if(S.news.some(x=>x.milestone===ms&&x.player===n))continue;
 const other=S[n===1?'p2':'p1'];
 const first=!other||!other.milestones[ms]||ts<=other.milestones[ms];
-S.news.unshift({date:d2s(ts),headline:HL[Math.floor(Math.random()*HL.length)].replace('%s',name.toUpperCase()).replace('%m',ms.toUpperCase()),player:n,milestone:ms,first})}
+const templates=NEWS_HEADLINES[ms]||['%s LOGRA '+ms.toUpperCase()];
+const headline=templates[first?0:1]||templates[0];
+S.news.unshift({date:d2s(ts),headline:headline.replace('%s',name.toUpperCase()),
+player:n,milestone:ms,first})}
 S.news.sort((a,b)=>b.date>a.date?1:-1);
 await save();render();
 si.textContent='OK! '+Object.keys(S['p'+n].milestones).length+' hitos, '+data.rep.toFixed(0)+' rep'};
@@ -222,22 +654,51 @@ reader.readAsText(fi.files[0])}
 async function sync(){const r=await fetch(DB+'/race.json');const d=await r.json();if(d){S=d;render();
 document.getElementById('ss').textContent='Actualizado!'}else document.getElementById('ss').textContent='Sin datos en la nube'}
 
+function updateDateline(){
+    const dl=document.getElementById('datelineCenter');
+    if(S.p1||S.p2){
+        const gd=Math.max(S.p1?S.p1.gameDate:0,S.p2?S.p2.gameDate:0);
+        if(gd>0){
+            const d=new Date(EPOCH.getTime()+gd*1000);
+            const days=['DOMINGO','LUNES','MARTES','MIERCOLES','JUEVES','VIERNES','SABADO'];
+            const months=['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE'];
+            dl.textContent=days[d.getDay()]+', '+d.getDate()+' DE '+months[d.getMonth()]+' DE '+d.getFullYear();
+            return;
+        }
+    }
+    dl.textContent='KERBIN SPACE CENTER';
+}
+
 function render(){
+updateDateline();
 if(S.p1){document.getElementById('n1').textContent=S.p1.name;document.getElementById('r1').textContent=Math.floor(S.p1.rep)+' REP';
 document.getElementById('i1').textContent=d2s(S.p1.gameDate)+' | $'+Math.floor(S.p1.funds).toLocaleString();document.getElementById('n1i').value=S.p1.name}
 if(S.p2){document.getElementById('n2').textContent=S.p2.name;document.getElementById('r2').textContent=Math.floor(S.p2.rep)+' REP';
 document.getElementById('i2').textContent=d2s(S.p2.gameDate)+' | $'+Math.floor(S.p2.funds).toLocaleString();document.getElementById('n2i').value=S.p2.name}
+
+// Update sub-headline
+if(S.p1&&S.p2){
+    const m1=Object.keys(S.p1.milestones).length,m2=Object.keys(S.p2.milestones).length;
+    let w1=0,w2=0;
+    for(const m of MO){const t1=S.p1.milestones[m],t2=S.p2.milestones[m];
+    if(t1&&t2){if(t1<t2)w1++;else if(t2<t1)w2++}else if(t1)w1++;else if(t2)w2++}
+    if(w1>w2)document.getElementById('subHeadline').textContent=S.p1.name.toUpperCase()+' LIDERA CON '+w1+' PRIMEROS; '+S.p2.name.toUpperCase()+' RESPONDE CON '+w2;
+    else if(w2>w1)document.getElementById('subHeadline').textContent=S.p2.name.toUpperCase()+' LIDERA CON '+w2+' PRIMEROS; '+S.p1.name.toUpperCase()+' RESPONDE CON '+w1;
+    else document.getElementById('subHeadline').textContent='EMPATE DRAMATICO: AMBOS PROGRAMAS CON '+w1+' PRIMEROS';
+}
 renderStats();renderTL();renderNews()}
 
 function renderStats(){
-const el=document.getElementById('statsEl');if(!S.p1&&!S.p2){el.innerHTML='<div class="card"><p style="color:#484f58">Importa las partidas para empezar</p></div>';return}
+const el=document.getElementById('statsEl');if(!S.p1&&!S.p2){el.innerHTML='<div style="padding:20px;text-align:center;font-style:italic;color:#7a6a50">Importe las partidas desde la seccion Archivo para comenzar la cobertura.</div>';return}
 const n1=S.p1?S.p1.name:'--',n2=S.p2?S.p2.name:'--';
 const m1=S.p1?Object.keys(S.p1.milestones).length:0,m2=S.p2?Object.keys(S.p2.milestones).length:0;
 let w1=0,w2=0;if(S.p1&&S.p2)for(const m of MO){const t1=S.p1.milestones[m],t2=S.p2.milestones[m];
 if(t1&&t2){if(t1<t2)w1++;else if(t2<t1)w2++}else if(t1)w1++;else if(t2)w2++}
 const tot=w1+w2||1;
 const v=(p,fn)=>p?fn(p):'--';
-let h=`<div class="card"><h3>Resumen</h3><table class="data">
+
+let h='<div class="columns"><div class="col">';
+h+=`<div class="card"><h3>Tabla de Posiciones</h3><table class="data">
 <tr><th></th><th class="p1">${n1}</th><th class="p2">${n2}</th></tr>
 <tr><td>Reputacion</td><td class="p1">${v(S.p1,p=>Math.floor(p.rep))}</td><td class="p2">${v(S.p2,p=>Math.floor(p.rep))}</td></tr>
 <tr><td>Fondos</td><td class="p1">${v(S.p1,p=>'$'+Math.floor(p.funds).toLocaleString())}</td><td class="p2">${v(S.p2,p=>'$'+Math.floor(p.funds).toLocaleString())}</td></tr>
@@ -247,18 +708,33 @@ let h=`<div class="card"><h3>Resumen</h3><table class="data">
 <tr><td>Tasa de Exito</td><td class="p1">${v(S.p1,p=>p.contractsCompleted?(p.contractsCompleted/(p.contractsCompleted+p.contractsFailed)*100).toFixed(0)+'%':'--')}</td><td class="p2">${v(S.p2,p=>p.contractsCompleted?(p.contractsCompleted/(p.contractsCompleted+p.contractsFailed)*100).toFixed(0)+'%':'--')}</td></tr>
 <tr><td>Fecha en Juego</td><td class="p1">${v(S.p1,p=>d2s(p.gameDate))}</td><td class="p2">${v(S.p2,p=>d2s(p.gameDate))}</td></tr>
 </table>
-<div style="margin-top:12px"><div class="bar">${w1+w2>0?`<div style="width:${w1/tot*100}%;background:#58a6ff">${w1>0?w1:''}</div><div style="width:${w2/tot*100}%;background:#f85149">${w2>0?w2:''}</div>`:''}</div></div>
+<div style="margin-top:10px"><div class="bar">${w1+w2>0?`<div style="width:${w1/tot*100}%;background:#1a2a44">${w1>0?w1:''}</div><div style="width:${w2/tot*100}%;background:#8b0000">${w2>0?w2:''}</div>`:''}</div></div>
 </div>`;
-h+=`<div class="card"><h3>Por Categoria</h3><table class="data">
+
+h+=`</div><div class="divider"></div><div class="col">`;
+h+=`<div class="card"><h3>Progreso por Categoria</h3><table class="data">
 <tr><th></th><th class="p1">${n1}</th><th class="p2">${n2}</th></tr>`;
 for(const[tier,[s,e]]of Object.entries(TIERS)){const sl=MO.slice(s,e+1);
 const c1=sl.filter(m=>S.p1&&S.p1.milestones[m]).length,c2=sl.filter(m=>S.p2&&S.p2.milestones[m]).length;
 h+=`<tr><td>${tier}</td><td class="p1">${c1}/${sl.length}</td><td class="p2">${c2}/${sl.length}</td></tr>`}
-h+=`</table></div>`;el.innerHTML=h}
+h+=`</table></div>`;
+
+// Latest news snippet in dashboard
+if(S.news&&S.news.length>0){
+    const latest=S.news[0];
+    h+=`<div style="margin-top:16px;padding-top:12px;border-top:2px solid #2a2218">
+    <div style="font-family:'Playfair Display',serif;font-size:0.65em;font-weight:900;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px">Ultima Hora</div>
+    <div style="font-family:'Playfair Display',serif;font-size:1.1em;font-weight:700;line-height:1.25;color:#2a2218">${latest.headline}</div>
+    <div style="font-size:0.7em;font-style:italic;color:#5a4a38;margin-top:3px">${latest.date}${latest.first?' &mdash; PRIMERO':''}</div>
+    </div>`;
+}
+
+h+=`</div></div>`;
+el.innerHTML=h}
 
 function renderTL(){
 const el=document.getElementById('tlEl');if(!S.p1&&!S.p2){el.innerHTML='';return}
-let h='<div style="display:flex;justify-content:space-between;padding:0 0 8px;font-size:0.8em;font-weight:700"><span class="p1">'+(S.p1?S.p1.name:'P1')+'</span><span class="p2">'+(S.p2?S.p2.name:'P2')+'</span></div>';
+let h='<div style="display:flex;justify-content:space-between;padding:8px 0;font-family:\'Playfair Display\',serif;font-size:0.8em;font-weight:900;text-transform:uppercase;letter-spacing:2px;border-bottom:2px solid #2a2218"><span class="p1">'+(S.p1?S.p1.name:'P1')+'</span><span class="p2">'+(S.p2?S.p2.name:'P2')+'</span></div>';
 let ct='';for(let idx=0;idx<MO.length;idx++){const m=MO[idx];
 for(const[tier,[s]]of Object.entries(TIERS))if(s===idx&&tier!==ct){ct=tier;h+=`<div class="tl-tier">${tier}</div>`}
 const t1=S.p1?S.p1.milestones[m]:null,t2=S.p2?S.p2.milestones[m]:null;
@@ -270,12 +746,23 @@ h+=`<div class="tl-item"><div class="tl-p1">${t1?`<span class="tl-date${f1?' tl-
 el.innerHTML=h}
 
 function renderNews(){
-const el=document.getElementById('newsEl');if(!S.news||!S.news.length){el.innerHTML='<p style="color:#484f58">Sin noticias aun</p>';return}
-let h='';for(const n of S.news.slice(0,30)){const c=n.player===1?'p1':'p2';
-h+=`<div class="news-item"><span class="date">${n.date}</span>${n.first?' <span class="tag">PRIMERO</span>':''}<div class="${c}">${n.headline}</div></div>`}
+const el=document.getElementById('newsEl');
+if(!S.news||!S.news.length){el.innerHTML='<p style="padding:20px;text-align:center;font-style:italic;color:#7a6a50">Aun no hay noticias. Importe partidas para generar la cobertura periodistica.</p>';return}
+
+// Render as single column, chronological (oldest first), no body text
+const items=S.news.slice(0,30).sort((a,b)=>a.date>b.date?1:a.date<b.date?-1:0);
+let h='';
+items.forEach(n=>{
+    const pClass=n.player===1?'news-p1':'news-p2';
+    const fClass=n.first?' first-headline':'';
+    h+=`<div class="news-article">
+        <div class="news-headline ${pClass}${fClass}">${n.headline}</div>
+        <div class="news-byline">${n.date}${n.first?' <span class="news-tag">PRIMERO</span>':''}</div>
+    </div>`;
+});
 el.innerHTML=h}
 
-load().then(()=>{render();console.log('Loaded from cloud, firsts:',S.p1?Object.keys(S.p1.milestones).length:'none',S.p2?Object.keys(S.p2.milestones).length:'none')}).catch(e=>console.error('Load failed',e));
+load().then(()=>{render();console.log('Loaded, firsts:',S.p1?Object.keys(S.p1.milestones).length:'none',S.p2?Object.keys(S.p2.milestones).length:'none')}).catch(e=>console.error('Load failed',e));
 </script>
 </body>
 </html>
